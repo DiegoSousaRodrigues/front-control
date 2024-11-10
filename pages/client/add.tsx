@@ -1,4 +1,5 @@
+import AddClient from '@/components/FormClient'
+
 export default function Add() {
-    return <>add</>
-  }
-  
+  return <AddClient />
+}

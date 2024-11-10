@@ -5,8 +5,14 @@ export default {
   theme: {
     extend: {
       colors: {
+        primary: '#CC0000',
+        secondary: '#009ee0',
+        tertiary: '#CC0000',
         background: 'var(--background)',
         foreground: 'var(--foreground)',
+      },
+      boxShadow: {
+        'table-row': '0 4px 8px rgba(0, 0, 0, 0.1)', // Define o valor da sombra
       },
     },
     keyframes: {

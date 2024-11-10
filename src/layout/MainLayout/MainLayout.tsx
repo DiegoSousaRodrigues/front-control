@@ -1,3 +1,4 @@
+import Container from '@/components/Container'
 import {
   AccordionContent,
   AccordionHeader,
@@ -6,7 +7,7 @@ import {
   AccordionRoot,
   AccordionTrigger,
   ArrowAccess,
-  Component,
+  Content,
   Empty,
   LinkStyled,
   MainArrow,
@@ -19,7 +20,7 @@ import { icons, menu } from './menu'
 export default function MainLayout({ children }: { children: React.ReactNode }) {
   return (
     <Wrapper>
-      <div className='w-1/5 px-4 py-2 bg-white'>
+      <Content>
         <div className='w-full flex gap-4 items-center'>
           <Empty>Icone</Empty>
           <span className='text-2xl'>Dist. MS</span>
@@ -50,8 +51,8 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
             )
           })}
         </AccordionRoot>
-      </div>
-      <Component>{children}</Component>
+      </Content>
+      <Container>{children}</Container>
     </Wrapper>
   )
 }
