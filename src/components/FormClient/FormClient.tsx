@@ -1,17 +1,21 @@
 import { useForm } from 'react-hook-form'
-import { Input } from '../Input/Input'
 import { Form, Title, Wrapper, WrapperInputs, FlexInputs, Button } from './FormClient.styles'
 import { ClientData } from './FormClient.types'
-import { Required } from '@/utils/validate'
+import { required } from '@/utils/validate'
 import Message from '../Message'
 import axios from 'axios'
+import { Input } from '../Input/Input'
+import { ClientDetails } from '@/types/client'
 
-export function AddClient() {
-  const { register, handleSubmit, formState } = useForm<ClientData>()
+export function FormClient({ props }: { props?: ClientDetails }) {
+  console.log(props)
+  const { register, handleSubmit, formState } = useForm<ClientData>({
+    defaultValues: props,
+  })
 
   function onSubmit(params: ClientData) {
-    axios.post('/api/client', params)
     console.log(params)
+    axios.post('/api/client', params)
   }
 
   return (
@@ -20,71 +24,71 @@ export function AddClient() {
       <Form onSubmit={handleSubmit(onSubmit)}>
         <FlexInputs>
           <WrapperInputs>
-            <Input label='Nome:' {...register('name', Required('Nome'))} />
+            <Input label='Nome:' mask='letter-only' {...register('name', required('Nome'))} />
             {formState.errors.name && <Message>{formState.errors.name.message}</Message>}
           </WrapperInputs>
 
           <WrapperInputs>
-            <Input label='Documento:' {...register('document', Required('Documento'))} />
+            <Input label='Documento:' mask='cpf' {...register('document', required('Documento'))} />
             {formState.errors.document && <Message>{formState.errors.document.message}</Message>}
           </WrapperInputs>
 
           <WrapperInputs>
-            <Input label='Celular:' {...register('phone', Required('Celular'))} />
+            <Input label='Celular:' mask='cel' {...register('phone', required('Celular'))} />
             {formState.errors.phone && <Message>{formState.errors.phone.message}</Message>}
           </WrapperInputs>
 
           <WrapperInputs>
-            <Input label='Telefone:' {...register('telephone', Required('Telefone'))} />
+            <Input label='Telefone:' mask='cel' {...register('telephone')} />
             {formState.errors.telephone && <Message>{formState.errors.telephone.message}</Message>}
           </WrapperInputs>
 
           <WrapperInputs>
-            <Input label='Data de nascimento:' {...register('birthdate', Required('Data de nascimento'))} />
+            <Input label='Data de nascimento:' mask='date' {...register('birthdate', required('Data de nascimento'))} />
             {formState.errors.birthdate && <Message>{formState.errors.birthdate.message}</Message>}
           </WrapperInputs>
         </FlexInputs>
 
         <FlexInputs>
           <WrapperInputs>
-            <Input label='CEP:' {...register('zipcode', Required('CEP'))} />
+            <Input label='CEP:' mask='cep' {...register('zipcode', required('CEP'))} />
             {formState.errors.zipcode && <Message>{formState.errors.zipcode.message}</Message>}
           </WrapperInputs>
 
           <WrapperInputs>
-            <Input label='Rua:' {...register('street', Required('Rua'))} />
+            <Input label='Rua:' mask='letter-only' {...register('street', required('Rua'))} />
             {formState.errors.street && <Message>{formState.errors.street.message}</Message>}
           </WrapperInputs>
 
           <WrapperInputs>
-            <Input label='Numero:' {...register('number', Required('Numero'))} />
+            <Input label='Numero:' {...register('number', required('Numero'))} />
             {formState.errors.number && <Message>{formState.errors.number.message}</Message>}
           </WrapperInputs>
 
           <WrapperInputs>
-            <Input label='Bairro:' {...register('quarter', Required('Bairro'))} />
+            <Input label='Bairro:' mask='letter-only' {...register('quarter', required('Bairro'))} />
             {formState.errors.quarter && <Message>{formState.errors.quarter.message}</Message>}
           </WrapperInputs>
 
           <WrapperInputs>
-            <Input label='Complemento:' {...register('complement', Required('Complemento'))} />
+            <Input label='Complemento:' {...register('complement')} />
             {formState.errors.complement && <Message>{formState.errors.complement.message}</Message>}
           </WrapperInputs>
         </FlexInputs>
         <FlexInputs>
           <WrapperInputs quantity={3}>
-            <Input label='Tipo de endereço:' {...register('addressType', Required('Tipo de endereço'))} />
+            <Input label='Tipo de endereço:' {...register('addressType', required('Tipo de endereço'))} />
             {/* Transformar em Select */}
             {formState.errors.addressType && <Message>{formState.errors.addressType.message}</Message>}
           </WrapperInputs>
 
           <WrapperInputs quantity={3}>
-            <Input label='Referencia:' {...register('addressReference', Required('Referencia'))} />
+            <Input label='Referencia:' {...register('addressReference')} />
             {formState.errors.addressReference && <Message>{formState.errors.addressReference.message}</Message>}
           </WrapperInputs>
 
           <WrapperInputs quantity={3}>
-            <Input label='Posição:' {...register('position', Required('Posição'))} />
+            <Input label='Posição:' mask='number-only' {...register('position')} />
             {formState.errors.position && <Message>{formState.errors.position.message}</Message>}
           </WrapperInputs>
         </FlexInputs>

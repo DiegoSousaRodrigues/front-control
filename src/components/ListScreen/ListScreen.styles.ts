@@ -1,5 +1,6 @@
 import styled, { w } from 'windstitch'
 import * as Theme from '@radix-ui/themes'
+import NextLink from 'next/link'
 
 export const Wrapper = w.div('px-12 py-8 flex flex-col gap-6')
 
@@ -36,4 +37,4 @@ export const TableCell = styled(Theme.Table.Cell, {
   className: '',
 })
 
-export const Button = w.button('')
+export const Link = styled(NextLink, {})

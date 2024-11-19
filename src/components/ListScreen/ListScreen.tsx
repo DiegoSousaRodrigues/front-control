@@ -1,10 +1,10 @@
 import { MdFormatListBulleted, MdOutlineModeEditOutline } from 'react-icons/md'
 import { RiGalleryView2 } from 'react-icons/ri'
 import {
-  Button,
   ChangeLayout,
   ChangeLayoutButton,
   Header,
+  Link,
   TableBody,
   TableCell,
   TableColumnHeaderCell,
@@ -64,16 +64,16 @@ export function ListScreen({ listClient }: ListScreenProps) {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {listClient.map(({ name, document, phone, street }) => (
+          {listClient.map(({ name, document, phone, street, id }) => (
             <TableRow key={`${name + street}`}>
               <TableRowHeaderCell>{name}</TableRowHeaderCell>
               <TableCell>{document}</TableCell>
               <TableCell>{phone}</TableCell>
               <TableCell>{street}</TableCell>
               <TableCell>
-                <Button type='button'>
+                <Link href={`/client/edit/${id}`}>
                   <MdOutlineModeEditOutline size={24} />
-                </Button>
+                </Link>
               </TableCell>
             </TableRow>
           ))}

@@ -1,5 +1,5 @@
-import AddClient from '@/components/FormClient'
+import FormClient from '@/components/FormClient'
 
 export default function Add() {
-  return <AddClient />
+  return <FormClient />
 }

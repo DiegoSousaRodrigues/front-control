@@ -1,4 +1,5 @@
 export type ClientDetails = {
+  id: number
   name: string
   document: string
   phone: string

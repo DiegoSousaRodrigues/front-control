@@ -1,5 +1,5 @@
 export const CommonValidate = {}
 
-export const Required = (name: string) => ({
+export const required = (name: string) => ({
   required: `Campo ${name} é obrigatório`,
 })

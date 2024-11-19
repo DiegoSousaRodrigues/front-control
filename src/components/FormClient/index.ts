@@ -1,3 +1,3 @@
-import { AddClient } from "./FormClient";
+import { FormClient } from './FormClient'
 
-export default AddClient
+export default FormClient

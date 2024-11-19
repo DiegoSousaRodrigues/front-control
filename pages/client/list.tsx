@@ -1,5 +1,5 @@
 import ListScreen from '@/components/ListScreen'
-import { FindAll } from '@/services/client'
+import { findAll } from '@/services/client'
 import { defaultPageProps } from '@/types/pageProps'
 
 export default function List({ list }: defaultPageProps) {
@@ -7,7 +7,7 @@ export default function List({ list }: defaultPageProps) {
 }
 
 export async function getServerSideProps() {
-  const data = await FindAll()
+  const data = await findAll()
 
   return {
     props: {
