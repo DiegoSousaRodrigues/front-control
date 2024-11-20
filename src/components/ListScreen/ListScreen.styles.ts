@@ -38,3 +38,5 @@ export const TableCell = styled(Theme.Table.Cell, {
 })
 
 export const Link = styled(NextLink, {})
+
+export const Button = w.button('')

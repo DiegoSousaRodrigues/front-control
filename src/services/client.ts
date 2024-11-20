@@ -17,3 +17,7 @@ export async function update(body: ClientData, id: string) {
 export async function findById(id?: string) {
   return await apiControl.get<ClientDetails>(`client/${id}`)
 }
+
+export async function changeStatus(id?: string, status?: string) {
+  return await apiControl.post<ClientDetails>(`client/status/${id}/${status}`)
+}

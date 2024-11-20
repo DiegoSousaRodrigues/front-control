@@ -9,15 +9,28 @@ import { ClientDetails } from '@/types/client'
 import { showToastEvent } from '@/events/events'
 
 export function FormClient({ props, type }: { props?: ClientDetails; type: 'edit' | 'add' }) {
-  const { register, handleSubmit, formState } = useForm<ClientData>({
+  const { register, handleSubmit, formState, reset } = useForm<ClientData>({
     defaultValues: props,
   })
 
-  function onSubmit(params: ClientData) {
+  async function onSubmit(params: ClientData) {
+    let response
+    let message
+
     if (type === 'add') {
-      axios.post('/api/client', params)
+      response = await axios.post('/api/client', params)
+      message = 'adicionado'
     } else if (type === 'edit') {
-      axios.put('/api/client', params)
+      response = await axios.put('/api/client', params)
+      message = 'atualizado'
+    }
+
+    if (response?.status === 200) {
+      showToastEvent({ status: 'success', description: `Cliente ${message} com sucesso` })
+
+      if (type === 'add') {
+        reset()
+      }
     }
   }
 
