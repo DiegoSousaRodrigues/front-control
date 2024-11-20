@@ -5,6 +5,9 @@ export default {
   theme: {
     extend: {
       colors: {
+        success: '#20BB57',
+        warning: '#FDD601',
+        error: '#F31260',
         primary: '#CC0000',
         secondary: '#009ee0',
         tertiary: '#CC0000',

@@ -10,6 +10,10 @@ export async function create(body: ClientData) {
   return await apiControl.post('client', body)
 }
 
+export async function update(body: ClientData, id: string) {
+  return await apiControl.put(`client/${id}`, body)
+}
+
 export async function findById(id?: string) {
   return await apiControl.get<ClientDetails>(`client/${id}`)
 }

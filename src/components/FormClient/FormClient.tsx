@@ -6,16 +6,19 @@ import Message from '../Message'
 import axios from 'axios'
 import { Input } from '../Input/Input'
 import { ClientDetails } from '@/types/client'
+import { showToastEvent } from '@/events/events'
 
-export function FormClient({ props }: { props?: ClientDetails }) {
-  console.log(props)
+export function FormClient({ props, type }: { props?: ClientDetails; type: 'edit' | 'add' }) {
   const { register, handleSubmit, formState } = useForm<ClientData>({
     defaultValues: props,
   })
 
   function onSubmit(params: ClientData) {
-    console.log(params)
-    axios.post('/api/client', params)
+    if (type === 'add') {
+      axios.post('/api/client', params)
+    } else if (type === 'edit') {
+      axios.put('/api/client', params)
+    }
   }
 
   return (
@@ -93,7 +96,7 @@ export function FormClient({ props }: { props?: ClientDetails }) {
           </WrapperInputs>
         </FlexInputs>
 
-        <Button>Salvar Cliente</Button>
+        <Button>{type === 'add' ? 'Salvar' : 'Editar'} Cliente</Button>
       </Form>
     </Wrapper>
   )
