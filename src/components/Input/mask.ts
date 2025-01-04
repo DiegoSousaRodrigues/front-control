@@ -33,6 +33,13 @@ const cpfMask = (value: string) =>
     .replace(/\.(\d{3})(\d)/, '.$1-$2')
     .slice(0, 14)
 
+const currencyMask = (value: string) =>
+  'R$ ' +
+  value
+    .replace(/\D/g, '')
+    .replace(/(\d)(\d{2})$/, '$1,$2')
+    .replace(/(?=(\d{3})+(\D))\B/g, '.')
+
 const maskMap = new Map<Mask, (value: string) => string>([
   ['cep', cepMask],
   ['cel', celMask],
@@ -41,6 +48,7 @@ const maskMap = new Map<Mask, (value: string) => string>([
   ['number-only', numberOnlyMask],
   ['city-cep', cityCepMask],
   ['cpf', cpfMask],
+  ['currency', currencyMask],
 ])
 
 export function inputMask(value: string, mask: Mask) {
@@ -50,19 +58,4 @@ export function inputMask(value: string, mask: Mask) {
   return value
 }
 
-export type Mask =
-  | 'date'
-  | 'cep'
-  | 'cel'
-  | 'letter-only'
-  | 'number-only'
-  | 'city-cep'
-  | 'cpf'
-  | 'cnpj'
-  | 'month'
-  | 'year'
-  | 'creditCard'
-  | 'cvv'
-  | 'document'
-  | 'currency'
-  | 'locale-currency'
+export type Mask = 'cep' | 'cel' | 'date' | 'letter-only' | 'number-only' | 'city-cep' | 'cpf' | 'currency'

@@ -1,43 +1,17 @@
-import { MdBlock, MdFormatListBulleted, MdLockOpen, MdOutlineModeEditOutline } from 'react-icons/md'
+import { MdFormatListBulleted } from 'react-icons/md'
 import { RiGalleryView2 } from 'react-icons/ri'
-import {
-  Button,
-  ChangeLayout,
-  ChangeLayoutButton,
-  Header,
-  Link,
-  TableBody,
-  TableCell,
-  TableColumnHeaderCell,
-  TableHeader,
-  TableRoot,
-  TableRow,
-  TableRowHeaderCell,
-  Title,
-  Wrapper,
-} from './ListScreen.styles'
+import { ChangeLayout, ChangeLayoutButton, Header, TableRoot, Title, Wrapper } from './ListScreen.styles'
 import { useRouter } from 'next/router'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { ParsedUrlQueryInput } from 'querystring'
-import { useQuery, useQueryClient } from '@tanstack/react-query'
-import { queryFetch } from '@/utils/queryFetch'
 import { ClientDetails } from '@/types/client'
-import axios from 'axios'
+import { ProductDetails } from '@/types/products'
+import { TableClient } from './Tables/Client'
+import { TableProduct } from './Tables/Product'
 
-export function ListScreen() {
+export function ListScreen({ data }: { data: ProductDetails[] | ClientDetails[] }) {
   const { replace, query, pathname } = useRouter()
-  const queryClient = useQueryClient()
   const [layout, setLayout] = useState<'list' | 'card'>((query?.layout as 'list' | 'card') || 'list')
-  const { data, refetch } = useQuery({
-    queryKey: ['/client/list'],
-    queryFn: queryFetch<ClientDetails[]>,
-    refetchOnMount: false,
-  })
-
-  useEffect(() => {
-    refetch()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
 
   function changeLayout(target: 'list' | 'card') {
     return () => {
@@ -46,26 +20,14 @@ export function ListScreen() {
     }
   }
 
+  const isClient = pathname.includes('client')
+  const isProduct = pathname.includes('product')
+
   function changeFilter(queryParams: string | ParsedUrlQueryInput | null | undefined) {
     replace({
       pathname,
       query: queryParams,
     })
-  }
-
-  function disableOrActiveClient(id: number, status: boolean) {
-    axios.post(
-      `/api/client/status`,
-      {},
-      {
-        params: {
-          id,
-          status: !status,
-        },
-      }
-    )
-
-    queryClient.invalidateQueries({ queryKey: ['/client/list'] })
   }
 
   return (
@@ -84,39 +46,8 @@ export function ListScreen() {
         {/* TODO fazer o seach aqui depois ??Talvez componentizar?? */}
       </Header>
       <TableRoot layout='fixed'>
-        <TableHeader>
-          <TableRow>
-            <TableColumnHeaderCell>Nome</TableColumnHeaderCell>
-            <TableColumnHeaderCell>Documento</TableColumnHeaderCell>
-            <TableColumnHeaderCell>Telefone</TableColumnHeaderCell>
-            <TableColumnHeaderCell>Endereço</TableColumnHeaderCell>
-            <TableColumnHeaderCell width={'100px'}></TableColumnHeaderCell>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {data?.map(({ name, document, phone, street, id, active }) => (
-            <TableRow key={`${name + street}`}>
-              <TableRowHeaderCell>{name}</TableRowHeaderCell>
-              <TableCell>{document}</TableCell>
-              <TableCell>{phone}</TableCell>
-              <TableCell>{street}</TableCell>
-              <TableCell>
-                <div className='flex gap-2'>
-                  <Link href={`/client/edit/${id}`}>
-                    <MdOutlineModeEditOutline size={24} />
-                  </Link>
-                  <Button onClick={() => disableOrActiveClient(id, active)}>
-                    {active ? (
-                      <MdBlock size={24} className='fill-error' />
-                    ) : (
-                      <MdLockOpen size={24} className='fill-success' />
-                    )}
-                  </Button>
-                </div>
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
+        {isClient && <TableClient data={data as ClientDetails[]} />}
+        {isProduct && <TableProduct data={data as ProductDetails[]} />}
       </TableRoot>
     </Wrapper>
   )

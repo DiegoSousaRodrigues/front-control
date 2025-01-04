@@ -9,9 +9,7 @@ import { ClientDetails } from '@/types/client'
 import { showToastEvent } from '@/events/events'
 
 export function FormClient({ props, type }: { props?: ClientDetails; type: 'edit' | 'add' }) {
-  const { register, handleSubmit, formState, reset } = useForm<ClientData>({
-    defaultValues: props,
-  })
+  const { register, handleSubmit, formState, reset } = useForm<ClientData>({ defaultValues: props })
 
   async function onSubmit(params: ClientData) {
     let response

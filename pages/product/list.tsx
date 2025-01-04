@@ -1,9 +1,9 @@
 import ListScreen from '@/components/ListScreen'
-import { findAll } from '@/services/client'
-import { ClientDetails } from '@/types/client'
+import { findAll } from '@/services/product'
+import { ProductDetails } from '@/types/products'
 import { GetServerSideProps } from 'next'
 
-export default function List(props: ClientDetails[]) {
+export default function List(props: ProductDetails[]) {
   return <ListScreen data={Object.values(props)} />
 }
 

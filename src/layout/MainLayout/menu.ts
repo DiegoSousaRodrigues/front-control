@@ -31,5 +31,16 @@ export const menu = [
   {
     icon: 'products',
     name: 'Produtos',
+    defaultLink: 'product',
+    subMenu: [
+      {
+        name: 'Cadastrar',
+        url: 'add',
+      },
+      {
+        name: 'Listar',
+        url: 'list',
+      },
+    ],
   },
 ] as MainLayoutMenu[]
