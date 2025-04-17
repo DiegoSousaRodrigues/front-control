@@ -1,7 +1,7 @@
 import axios from 'axios'
 import Router from 'next/router'
 
-export function disableOrActiveClient(id: number, status: boolean) {
+export async function disableOrActiveClient(id: number, status: boolean) {
   axios.post(
     `/api/client/status`,
     {},

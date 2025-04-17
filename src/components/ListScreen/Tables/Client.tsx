@@ -11,8 +11,18 @@ import {
 import Link from 'next/link'
 import { MdBlock, MdLockOpen, MdOutlineModeEditOutline } from 'react-icons/md'
 import { disableOrActiveClient } from '@/utils/status'
+import { useQueryClient } from '@tanstack/react-query'
 
 export function TableClient({ data }: { data: ClientDetails[] }) {
+  const queryClient = useQueryClient()
+
+  function handleDisableOrActiveClient(id: number, status: boolean) {
+    return async () => {
+      await disableOrActiveClient(id, status)
+      queryClient.invalidateQueries({ queryKey: ['client/list'] })
+    }
+  }
+
   return (
     <>
       <TableHeader>
@@ -36,7 +46,7 @@ export function TableClient({ data }: { data: ClientDetails[] }) {
                 <Link href={`/client/edit/${id}`}>
                   <MdOutlineModeEditOutline size={24} />
                 </Link>
-                <Button onClick={() => disableOrActiveClient(id, active)}>
+                <Button onClick={handleDisableOrActiveClient(id, active)}>
                   {active ? (
                     <MdBlock size={24} className='fill-error' />
                   ) : (
