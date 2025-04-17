@@ -14,3 +14,17 @@ export async function disableOrActiveClient(id: number, status: boolean) {
   )
   Router.reload()
 }
+
+export async function disableOrActiveProduct(id: number, status: boolean) {
+  axios.post(
+    `/api/product/status`,
+    {},
+    {
+      params: {
+        id,
+        status: !status,
+      },
+    }
+  )
+  Router.reload()
+}
