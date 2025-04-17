@@ -1,4 +1,4 @@
-import { findAll } from '@/services/client'
+import { findAll } from '@/services/product'
 import { NextApiRequest, NextApiResponse } from 'next'
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
