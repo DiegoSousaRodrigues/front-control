@@ -10,18 +10,14 @@ import {
 } from '../ListScreen.styles'
 import Link from 'next/link'
 import { MdBlock, MdLockOpen, MdOutlineModeEditOutline } from 'react-icons/md'
-import { disableOrActiveProduct } from '@/utils/status'
-import { useQueryClient } from '@tanstack/react-query'
 
-export function TableProduct({ data }: { data: ProductDetails[] }) {
-  const queryClient = useQueryClient()
-  function handleDisableOrActiveProduct(id: number, status: boolean) {
-    return async () => {
-      await disableOrActiveProduct(id, status)
-      queryClient.invalidateQueries({ queryKey: ['client/list'] })
-    }
-  }
-
+export function TableProduct({
+  data,
+  handleDisableOrActiveProduct,
+}: {
+  data: ProductDetails[]
+  handleDisableOrActiveProduct: (id: number, status: boolean) => void
+}) {
   return (
     <>
       <TableHeader>
@@ -40,7 +36,7 @@ export function TableProduct({ data }: { data: ProductDetails[] }) {
                 <Link href={`/client/edit/${id}`}>
                   <MdOutlineModeEditOutline size={24} />
                 </Link>
-                <Button onClick={handleDisableOrActiveProduct(id, active)}>
+                <Button onClick={() => handleDisableOrActiveProduct(id, active)}>
                   {active ? (
                     <MdBlock size={24} className='fill-error' />
                   ) : (

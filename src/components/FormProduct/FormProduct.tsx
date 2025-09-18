@@ -7,11 +7,14 @@ import { required } from '@/utils/validate'
 import axios from 'axios'
 import { showToastEvent } from '@/events/events'
 import { ProductDetails } from '@/types/products'
+import { useState } from 'react'
 
 export function FormProduct({ props, type }: { props?: ProductDetails; type: 'edit' | 'add' }) {
   const { formState, register, reset, handleSubmit } = useForm<ProductData>({ defaultValues: props })
+  const [disabled, setDisabled] = useState<boolean>(false)
 
   async function onSubmit(params: ProductData) {
+    setDisabled(true)
     let response
     let message
 
@@ -30,6 +33,7 @@ export function FormProduct({ props, type }: { props?: ProductDetails; type: 'ed
         reset()
       }
     }
+    setDisabled(false)
   }
 
   return (
@@ -48,7 +52,7 @@ export function FormProduct({ props, type }: { props?: ProductDetails; type: 'ed
           </WrapperInputs>
         </div>
 
-        <Button>{type === 'add' ? 'Salvar' : 'Editar'} Produto</Button>
+        <Button disabled={disabled}>{type === 'add' ? 'Salvar' : 'Editar'} Produto</Button>
       </Form>
     </Wrapper>
   )

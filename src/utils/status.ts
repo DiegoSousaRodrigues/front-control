@@ -1,8 +1,7 @@
 import axios from 'axios'
-import Router from 'next/router'
 
 export async function disableOrActiveClient(id: number, status: boolean) {
-  axios.post(
+  await axios.post(
     `/api/client/status`,
     {},
     {
@@ -12,11 +11,10 @@ export async function disableOrActiveClient(id: number, status: boolean) {
       },
     }
   )
-  Router.reload()
 }
 
 export async function disableOrActiveProduct(id: number, status: boolean) {
-  axios.post(
+  await axios.post(
     `/api/product/status`,
     {},
     {
@@ -26,5 +24,4 @@ export async function disableOrActiveProduct(id: number, status: boolean) {
       },
     }
   )
-  Router.reload()
 }

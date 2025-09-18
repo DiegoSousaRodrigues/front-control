@@ -7,6 +7,8 @@ export const Wrapper = w.div('flex bg-gray-100 h-full')
 
 export const Content = w.div('w-1/5 px-4 py-2 bg-white')
 
+export const WrapperImage = w.div('w-full flex gap-4 justify-center')
+
 export const AccordionRoot = styled(Accordion.Root, {
   className: 'flex flex-col gap-4 px-2 py-2',
 })

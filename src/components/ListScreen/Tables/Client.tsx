@@ -10,19 +10,13 @@ import {
 } from '../ListScreen.styles'
 import Link from 'next/link'
 import { MdBlock, MdLockOpen, MdOutlineModeEditOutline } from 'react-icons/md'
-import { disableOrActiveClient } from '@/utils/status'
-import { useQueryClient } from '@tanstack/react-query'
 
-export function TableClient({ data }: { data: ClientDetails[] }) {
-  const queryClient = useQueryClient()
+type TableClientProps = {
+  data: ClientDetails[]
+  handleDisableOrActiveClient: (id: number, status: boolean) => void
+}
 
-  function handleDisableOrActiveClient(id: number, status: boolean) {
-    return async () => {
-      await disableOrActiveClient(id, status)
-      queryClient.invalidateQueries({ queryKey: ['client/list'] })
-    }
-  }
-
+export function TableClient({ data, handleDisableOrActiveClient }: TableClientProps) {
   return (
     <>
       <TableHeader>
@@ -35,7 +29,7 @@ export function TableClient({ data }: { data: ClientDetails[] }) {
         </TableRow>
       </TableHeader>
       <TableBody>
-        {(data as ClientDetails[])?.map(({ name, document, phone, street, id, active }) => (
+        {data?.map(({ name, document, phone, street, id, active }) => (
           <TableRow key={`${name + street}`}>
             <TableRowHeaderCell>{name}</TableRowHeaderCell>
             <TableCell>{document}</TableCell>
@@ -46,7 +40,7 @@ export function TableClient({ data }: { data: ClientDetails[] }) {
                 <Link href={`/client/edit/${id}`}>
                   <MdOutlineModeEditOutline size={24} />
                 </Link>
-                <Button onClick={handleDisableOrActiveClient(id, active)}>
+                <Button onClick={() => handleDisableOrActiveClient(id, active)}>
                   {active ? (
                     <MdBlock size={24} className='fill-error' />
                   ) : (

@@ -13,18 +13,21 @@ import {
   MainArrow,
   Title,
   Wrapper,
+  WrapperImage,
 } from './MainLayout.styles'
 import { SubMenu } from './MainLayout.types'
 import { icons, menu } from './menu'
+import Image from 'next/image'
 
 export default function MainLayout({ children }: { children: React.ReactNode }) {
   return (
     <Wrapper>
       <Content>
-        <div className='w-full flex gap-4 items-center'>
-          <Empty>Icone</Empty>
-          <span className='text-2xl'>Dist. MS</span>
-        </div>
+        <WrapperImage>
+          <Empty>
+            <Image alt='Logo' src='/images/logo.png' width={100} height={100} />
+          </Empty>
+        </WrapperImage>
         <AccordionRoot type='multiple'>
           {menu.map(({ name, icon, subMenu, defaultLink }) => {
             const Icon = icons.get(icon)
