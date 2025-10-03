@@ -33,7 +33,7 @@ export function TableProduct({
             <TableRowHeaderCell>{price}</TableRowHeaderCell>
             <TableCell>
               <div className='flex gap-2'>
-                <Link href={`/client/edit/${id}`}>
+                <Link href={`/product/edit/${id}`}>
                   <MdOutlineModeEditOutline size={24} />
                 </Link>
                 <Button onClick={() => handleDisableOrActiveProduct(id, active)}>
