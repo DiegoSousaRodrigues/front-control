@@ -1,9 +1,9 @@
 import FormProduct from '@/components/FormProduct'
 import { findById } from '@/services/product'
-import { ClientDetails } from '@/types/client'
+import { ProductDetails } from '@/types/products'
 import { GetServerSideProps, GetServerSidePropsContext } from 'next'
 
-export default function Edit(props: ClientDetails) {
+export default function Edit(props: ProductDetails) {
   return <FormProduct props={props} type='edit' />
 }
 

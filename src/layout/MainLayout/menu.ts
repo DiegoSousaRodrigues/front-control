@@ -27,6 +27,17 @@ export const menu = [
   {
     icon: 'order',
     name: 'Pedidos',
+    defaultLink: 'order',
+    subMenu: [
+      {
+        name: 'Cadastrar',
+        url: 'add',
+      },
+      {
+        name: 'Listar',
+        url: 'list',
+      },
+    ],
   },
   {
     icon: 'products',
