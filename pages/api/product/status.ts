@@ -5,7 +5,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (req.method === 'POST') {
     const { id, status } = req.query
 
-    const response = await changeStatus (id as string, status as string)
+    const response = await changeStatus(id as string, status as string)
 
     if (response.status === 200) {
       res.status(200).json(response.data)
