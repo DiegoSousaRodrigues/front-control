@@ -1,5 +1,5 @@
-import OrderScreen from '@/components/OrderScreen'
+import FormOrder from '@/components/FormOrder'
 
-export default function List() {
-  return <OrderScreen />
+export default function Add() {
+  return <FormOrder />
 }
