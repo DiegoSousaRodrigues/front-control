@@ -1,22 +1,33 @@
-import * as React from 'react'
 import * as SelectComponent from '@radix-ui/react-select'
 import { SelectProps } from './Select.types'
-import { Content, Group, Label, Portal, Root, Trigger, Viewport, Wrapper } from './Select.styles'
+import { Content, Group, Item, Label, Portal, Root, Trigger, Viewport, Wrapper } from './Select.styles'
+import { forwardRef } from 'react'
 
-export function Select({ label, items }: SelectProps) {
+export function Select({ label, items, onChange, value, addIndexZero = false }: SelectProps) {
+  if (addIndexZero) {
+    items = [{ label: 'Selecione', value: 0 }, ...items]
+  }
+
+  function handleOnChange(value: string) {
+    onChange(value)
+  }
+
   return (
     <Wrapper>
       <Label>{label}</Label>
-      <Root>
+      <Root
+        onValueChange={(value) => handleOnChange(value)}
+        value={(value as string) || (addIndexZero ? '0' : undefined)}
+      >
         <Trigger>
           <SelectComponent.Value />
         </Trigger>
         <Portal>
-          <Content className='overflow-hidden rounded-md bg-white border border-gray-200'>
+          <Content>
             <Viewport className='p-[5px]'>
               <Group>
                 {items.map((item) => (
-                  <SelectComponentItem key={item.value} value={item.value}>
+                  <SelectComponentItem key={item.value} value={item.value.toString()}>
                     {item.label}
                   </SelectComponentItem>
                 ))}
@@ -34,21 +45,15 @@ interface SelectComponentItemProps extends React.ComponentPropsWithoutRef<typeof
   className?: string
 }
 
-const SelectComponentItem = React.forwardRef<HTMLDivElement, SelectComponentItemProps>(
+const SelectComponentItem = forwardRef<HTMLDivElement, SelectComponentItemProps>(
   ({ children, ...props }, forwardedRef) => {
     return (
-      <SelectComponent.Item
-        className={
-          'hover:bg-primary hover:text-white h-[40px] flex items-center select-none rounded-lg text-[14px] leading-none data-[highlighted]:bg-violet9 data-[disabled]:text-mauve8 data-[highlighted]:text-violet1 data-[highlighted]:outline-none'
-        }
-        {...props}
-        ref={forwardedRef}
-      >
+      <Item {...props} ref={forwardedRef}>
         <SelectComponent.ItemText>{children}</SelectComponent.ItemText>
         <SelectComponent.ItemIndicator className='absolute left-0 inline-flex w-[25px] items-center justify-center'>
           <CheckIcon />
         </SelectComponent.ItemIndicator>
-      </SelectComponent.Item>
+      </Item>
     )
   }
 )
