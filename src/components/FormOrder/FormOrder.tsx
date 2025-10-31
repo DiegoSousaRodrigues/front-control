@@ -11,6 +11,7 @@ import { queryFetch } from '@/utils/queryFetch'
 import { ClientDetails } from '@/types/client'
 import { ProductDetails } from '@/types/products'
 import { numberToBRLString } from '@/utils/currency'
+import axios from 'axios'
 
 export function FormOrder() {
   const { control, register, handleSubmit, getValues } = useForm<OrderData>()
@@ -32,10 +33,9 @@ export function FormOrder() {
 
   const listProduct = dataProduct?.map((p) => ({ value: p.id, label: p.name, price: numberToBRLString(p.price) }))
 
-  console.log({ listClients, listProduct })
-
   function onSubmit(data: OrderData) {
     console.log(data)
+    axios.post('/api/order', data)
   }
 
   function addProducts() {
@@ -53,7 +53,7 @@ export function FormOrder() {
       <Title>Cadastrar pedido</Title>
       <form onSubmit={handleSubmit(onSubmit)} className='flex flex-col gap-4'>
         <div className='flex gap-4'>
-          <div className='w-1/4'>
+          <div className='w-1/3'>
             <Controller
               control={control}
               name='clientId'
@@ -63,7 +63,7 @@ export function FormOrder() {
             />
           </div>
 
-          <div className='w-1/4'>
+          <div className='w-1/3'>
             <Input label='Observação sobre o pedido' {...register('observation')} />
           </div>
         </div>

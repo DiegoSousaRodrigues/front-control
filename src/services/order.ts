@@ -6,7 +6,7 @@ export async function findAll() {
   return await apiControl.get<OrderDetails[]>('order/list')
 }
 
-export async function create(body: ClientData) {
+export async function create(body: OrderDetails) {
   return await apiControl.post('order', body)
 }
 

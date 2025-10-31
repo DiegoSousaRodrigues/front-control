@@ -18,7 +18,7 @@ export const Content = styled(Select.Content, {
   className: 'overflow-hidden rounded-md bg-white border border-gray-200',
 })
 
-export const Viewport = styled(Select.Viewport, {})
+export const Viewport = styled(Select.Viewport, { className: 'p-[5px]' })
 
 export const Group = styled(Select.Group, {})
 

@@ -4,7 +4,7 @@ import { Content, Group, Item, Label, Portal, Root, Trigger, Viewport, Wrapper }
 import { forwardRef } from 'react'
 
 export function Select({ label, items, onChange, value }: SelectProps) {
-  function handleOnChange(value: string) {
+  function handleOnChange(value: string | number) {
     onChange(value)
   }
 
@@ -17,7 +17,7 @@ export function Select({ label, items, onChange, value }: SelectProps) {
         </Trigger>
         <Portal>
           <Content>
-            <Viewport className='p-[5px]'>
+            <Viewport>
               <Group>
                 {items.map((item) => (
                   <SelectComponentItem key={item.value} value={item.value.toString()}>
