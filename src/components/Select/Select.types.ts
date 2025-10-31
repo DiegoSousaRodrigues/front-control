@@ -4,5 +4,4 @@ export type SelectProps = {
   items: { label: string; value: string | number }[]
   value: string | number
   onChange: (...event: any[]) => void
-  addIndexZero: boolean
 }

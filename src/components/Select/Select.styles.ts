@@ -8,7 +8,8 @@ export const Label = w.label('text-xs text-primary px-2')
 export const Root = styled(Select.Root, {})
 
 export const Trigger = styled(Select.Trigger, {
-  className: 'w-full h-[38px] rounded-lg border border-solid px-4 text-start border-gray-200 hover:border-primary',
+  className:
+    'w-full h-[38px] rounded-lg border border-solid px-4 text-start border-gray-200 hover:border-primary focus:border focus:border-primary overflow-hidden',
 })
 
 export const Portal = styled(Select.Portal, {})

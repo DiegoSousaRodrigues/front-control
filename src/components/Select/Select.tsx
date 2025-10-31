@@ -3,11 +3,7 @@ import { SelectProps } from './Select.types'
 import { Content, Group, Item, Label, Portal, Root, Trigger, Viewport, Wrapper } from './Select.styles'
 import { forwardRef } from 'react'
 
-export function Select({ label, items, onChange, value, addIndexZero = false }: SelectProps) {
-  if (addIndexZero) {
-    items = [{ label: 'Selecione', value: 0 }, ...items]
-  }
-
+export function Select({ label, items, onChange, value }: SelectProps) {
   function handleOnChange(value: string) {
     onChange(value)
   }
@@ -15,10 +11,7 @@ export function Select({ label, items, onChange, value, addIndexZero = false }: 
   return (
     <Wrapper>
       <Label>{label}</Label>
-      <Root
-        onValueChange={(value) => handleOnChange(value)}
-        value={(value as string) || (addIndexZero ? '0' : undefined)}
-      >
+      <Root onValueChange={(value) => handleOnChange(value)} value={value as string}>
         <Trigger>
           <SelectComponent.Value />
         </Trigger>

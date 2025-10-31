@@ -1,21 +1,31 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Controller } from 'react-hook-form'
 import { OrderSkuLineProps } from './OrderSkuLine.types'
 import Select from '../Select'
 import { Input } from '../Input/Input'
 import { MdDelete } from 'react-icons/md'
-import { useState } from 'react'
+import { useState, ChangeEvent } from 'react'
+import { BRLStringToNumber, numberToBRLString } from '@/utils/currency'
 
-export function OrderSkuLine({ index, control, mockProducts, removeProduct, productId }: OrderSkuLineProps) {
-  const [price, setPrice] = useState<number>()
-  const defaultPriceString = mockProducts.find(({ value }) => value == productId)?.price
-  const { _getWatch } = control
-  const quantity = _getWatch(`products.${index}.quantity`)
+export function OrderSkuLine({ index, control, products, removeProduct, getValues }: OrderSkuLineProps) {
+  const [price, setPrice] = useState<string>()
 
-  function updatePrice() {
-    setPrice(150 * quantity)
+  function handleUpdatePrice(cb: (...event: any[]) => void) {
+    return (eventOrValue: ChangeEvent<HTMLInputElement> | string | number) => {
+      cb(eventOrValue)
+      const productId = getValues(`products.${index}.productId`)
+      updatePrice(productId)
+    }
   }
 
-  const { register } = control
+  function updatePrice(productId: string | number) {
+    const defaultPriceString = products.find(({ value }) => String(value) === productId)?.price
+    const priceNumber = BRLStringToNumber(defaultPriceString)
+    const quantity = getValues(`products.${index}.quantity`)
+
+    setPrice(numberToBRLString(priceNumber * quantity))
+  }
+
   return (
     <div className='flex gap-4 items-end'>
       <div className='w-1/4'>
@@ -23,12 +33,24 @@ export function OrderSkuLine({ index, control, mockProducts, removeProduct, prod
           control={control}
           name={`products.${index}.productId`}
           render={({ field: { value, onChange } }) => (
-            <Select label='Produto' items={mockProducts} value={value} onChange={onChange} addIndexZero />
+            <Select label='Produto' items={products} value={value} onChange={handleUpdatePrice(onChange)} />
           )}
         />
       </div>
       <div className='w-1/4'>
-        <Input label='Quantidade' mask='number-only' maxLength={4} {...register(`products.${index}.quantity`)} />
+        <Controller
+          control={control}
+          name={`products.${index}.quantity`}
+          render={({ field: { value, onChange } }) => (
+            <Input
+              label='Quantidade'
+              mask='number-only'
+              maxLength={4}
+              value={value}
+              onChange={handleUpdatePrice(onChange)}
+            />
+          )}
+        />
       </div>
       <div className='w-1/4'>
         <Input label='Preço' value={price} disabled />
