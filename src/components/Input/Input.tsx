@@ -44,7 +44,7 @@ function InputComponent({ label, mask, value, ...props }: InputProps, ref: Ref<H
   }
 
   return (
-    <Wrapper>
+    <Wrapper disabled={props.disabled}>
       {label && <Label>{label}</Label>}
       <InputElement {...props} onChange={handleChange} value={_value} ref={inputRef} />
     </Wrapper>
