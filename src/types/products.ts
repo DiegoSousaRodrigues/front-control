@@ -1,6 +1,6 @@
 export type ProductDetails = {
   id: number
   name: string
-  price: number
+  price: string
   active: boolean
 }

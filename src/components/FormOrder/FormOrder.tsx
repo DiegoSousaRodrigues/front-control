@@ -2,7 +2,20 @@
 import { Controller, useFieldArray, useForm } from 'react-hook-form'
 import { Input } from '../Input/Input'
 import Select from '../Select'
-import { Title, Wrapper } from './FormOrder.styles'
+import {
+  Title,
+  Wrapper,
+  Form,
+  FieldsRow,
+  ClientField,
+  ClientSelectContainer,
+  ObservationField,
+  Separator,
+  ButtonsRow,
+  AddButton,
+  SubmitButton,
+  FlexCol,
+} from './FormOrder.styles'
 import { OrderData } from './FormOrder.types'
 import uniqueId from 'lodash/uniqueId'
 import OrderSkuLine from '../OrderSkuLine'
@@ -10,11 +23,11 @@ import { useQuery } from '@tanstack/react-query'
 import { queryFetch } from '@/utils/queryFetch'
 import { ClientDetails } from '@/types/client'
 import { ProductDetails } from '@/types/products'
-import { numberToBRLString } from '@/utils/currency'
 import axios from 'axios'
+import Message from '../Message'
 
 export function FormOrder() {
-  const { control, register, handleSubmit, getValues } = useForm<OrderData>()
+  const { control, register, handleSubmit, getValues, formState, setError } = useForm<OrderData>()
   const { fields, append, remove } = useFieldArray({ control, name: 'products' })
 
   const { data: dataClient } = useQuery({
@@ -31,10 +44,14 @@ export function FormOrder() {
 
   const listClients = dataClient?.map((c) => ({ value: c.id, label: `${c.name} - ${c.street}, ${c.number}` }))
 
-  const listProduct = dataProduct?.map((p) => ({ value: p.id, label: p.name, price: numberToBRLString(p.price) }))
+  const listProduct = dataProduct?.map((p) => ({ value: p.id, label: p.name, price: p.price }))
 
   function onSubmit(data: OrderData) {
-    console.log(data)
+    if (!data.products.length) {
+      setError('products', { type: 'required', message: 'Adicione ao menos um produto' })
+      return
+    }
+
     axios.post('/api/order', data)
   }
 
@@ -51,47 +68,53 @@ export function FormOrder() {
   return (
     <Wrapper>
       <Title>Cadastrar pedido</Title>
-      <form onSubmit={handleSubmit(onSubmit)} className='flex flex-col gap-4'>
-        <div className='flex gap-4'>
-          <div className='w-1/3'>
-            <Controller
-              control={control}
-              name='clientId'
-              render={({ field: { onChange, value } }) => (
-                <Select label='Selecione um cliente' items={listClients || []} value={value} onChange={onChange} />
-              )}
-            />
-          </div>
+      <Form onSubmit={handleSubmit(onSubmit)}>
+        <FieldsRow>
+          <ClientField>
+            <ClientSelectContainer>
+              <Controller
+                control={control}
+                name='clientId'
+                rules={{ required: 'Campo obrigatorio' }}
+                render={({ field: { onChange, value } }) => (
+                  <Select label='Selecione um cliente' items={listClients || []} value={value} onChange={onChange} />
+                )}
+              />
+            </ClientSelectContainer>
+            {formState.errors.clientId && <Message>{formState.errors.clientId.message}</Message>}
+          </ClientField>
 
-          <div className='w-1/3'>
+          <ObservationField>
             <Input label='Observação sobre o pedido' {...register('observation')} />
-          </div>
-        </div>
+          </ObservationField>
+        </FieldsRow>
 
-        <div className='h-[1px] w-full bg-gray-200'></div>
+        <Separator />
 
-        {fields &&
-          fields.map(({ id }, index) => (
-            <OrderSkuLine
-              key={uniqueId('order-sku-line' + id)}
-              index={index}
-              control={control}
-              removeProduct={removeProduct}
-              products={listProduct || []}
-              getValues={getValues}
-            />
-          ))}
+        <FlexCol>
+          {fields &&
+            fields.map(({ id }, index) => (
+              <OrderSkuLine
+                key={uniqueId('order-sku-line' + id)}
+                index={index}
+                control={control}
+                removeProduct={removeProduct}
+                products={listProduct || []}
+                getValues={getValues}
+              />
+            ))}
 
-        <div className='flex gap-2'>
-          <button className='w-1/2 bg-primary py-2 rounded-lg text-white' type='button' onClick={addProducts}>
+          {formState.errors.products && <Message>{formState.errors.products.message}</Message>}
+        </FlexCol>
+
+        <ButtonsRow>
+          <AddButton type='button' onClick={addProducts}>
             Adicionar mais produtos
-          </button>
+          </AddButton>
 
-          <button className='w-1/2 border border-primary border-solid py-2 rounded-lg text-primary'>
-            Cadastrar pedido
-          </button>
-        </div>
-      </form>
+          <SubmitButton>Cadastrar pedido</SubmitButton>
+        </ButtonsRow>
+      </Form>
     </Wrapper>
   )
 }
