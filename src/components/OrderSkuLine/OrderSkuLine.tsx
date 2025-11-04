@@ -6,9 +6,11 @@ import { Input } from '../Input/Input'
 import { MdDelete } from 'react-icons/md'
 import { useState, ChangeEvent } from 'react'
 import { BRLStringToNumber, numberToBRLString } from '@/utils/currency'
+import Message from '../Message'
 
 export function OrderSkuLine({ index, control, products, removeProduct, getValues }: OrderSkuLineProps) {
   const [price, setPrice] = useState<string>()
+  const { _formState } = control
 
   function handleUpdatePrice(cb: (...event: any[]) => void) {
     return (eventOrValue: ChangeEvent<HTMLInputElement> | string | number) => {
@@ -27,17 +29,23 @@ export function OrderSkuLine({ index, control, products, removeProduct, getValue
   }
 
   return (
-    <div className='flex gap-4 items-end'>
-      <div className='w-1/4'>
-        <Controller
-          control={control}
-          name={`products.${index}.productId`}
-          render={({ field: { value, onChange } }) => (
-            <Select label='Produto' items={products} value={value} onChange={handleUpdatePrice(onChange)} />
+    <div className='flex gap-4 items-start'>
+      <div className='w-[calc(100%_/_3_-_24px)]'>
+        <div className='flex flex-col gap-2'>
+          <Controller
+            control={control}
+            name={`products.${index}.productId`}
+            rules={{ required: 'Campo obrigatorio', validate: (value) => (!value ? 'Campo obrigatorio' : true) }}
+            render={({ field: { value, onChange } }) => (
+              <Select label='Produto' items={products} value={value} onChange={handleUpdatePrice(onChange)} />
+            )}
+          />
+          {_formState.errors.products?.[index]?.productId && (
+            <Message>{_formState.errors.products?.[index].productId.message}</Message>
           )}
-        />
+        </div>
       </div>
-      <div className='w-1/4'>
+      <div className='w-[calc(100%_/_3_-_24px)]'>
         <Controller
           control={control}
           name={`products.${index}.quantity`}
@@ -52,10 +60,14 @@ export function OrderSkuLine({ index, control, products, removeProduct, getValue
           )}
         />
       </div>
-      <div className='w-1/4'>
+      <div className='w-[calc(100%_/_3_-_24px)]'>
         <Input label='Preço' value={price} disabled />
       </div>
-      <button type='button' onClick={removeProduct(index)} className='rounded-full h-[40px] flex items-center'>
+      <button
+        type='button'
+        onClick={removeProduct(index)}
+        className='rounded-full h-[38px] w-[24px] mt-[14px] flex items-center'
+      >
         <MdDelete size={24} className='fill-primary' />
       </button>
     </div>

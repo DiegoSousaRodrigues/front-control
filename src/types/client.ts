@@ -14,4 +14,5 @@ export type ClientDetails = {
   addressReference: string
   position: number
   active: boolean
+  fullAddress: string
 }

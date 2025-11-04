@@ -11,13 +11,17 @@ export function TableOrder({ data }: TableOrderProps) {
     <>
       <TableHeader>
         <TableRow>
-          <TableColumnHeaderCell>Id</TableColumnHeaderCell>
+          <TableColumnHeaderCell>Cliente</TableColumnHeaderCell>
+          <TableColumnHeaderCell>Endereço</TableColumnHeaderCell>
+          <TableColumnHeaderCell>Preço total</TableColumnHeaderCell>
         </TableRow>
       </TableHeader>
       <TableBody>
-        {data?.map(({ id }) => (
+        {data?.map(({ id, client: { fullAddress, name }, priceTotal }) => (
           <TableRow key={id}>
-            <TableRowHeaderCell>{id}</TableRowHeaderCell>
+            <TableRowHeaderCell>{name}</TableRowHeaderCell>
+            <TableRowHeaderCell>{fullAddress}</TableRowHeaderCell>
+            <TableRowHeaderCell>{priceTotal}</TableRowHeaderCell>
           </TableRow>
         ))}
       </TableBody>
