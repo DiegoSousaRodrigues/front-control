@@ -4,10 +4,10 @@ import Message from '../Message'
 import { Button, Form, Title, Wrapper, WrapperInputs } from './FormProduct.styles'
 import { ProductData } from './FormProduct.types'
 import { required } from '@/utils/validate'
-import axios from 'axios'
 import { showToastEvent } from '@/events/events'
 import { ProductDetails } from '@/types/products'
 import { useState } from 'react'
+import { add, update } from '@/api-client/product'
 
 export function FormProduct({ props, type }: { props?: ProductDetails; type: 'edit' | 'add' }) {
   const { formState, register, reset, handleSubmit } = useForm<ProductData>({ defaultValues: props })
@@ -19,10 +19,10 @@ export function FormProduct({ props, type }: { props?: ProductDetails; type: 'ed
     let message
 
     if (type === 'add') {
-      response = await axios.post('/api/product', params)
+      response = await add(params)
       message = 'adicionado'
     } else if (type === 'edit') {
-      response = await axios.put('/api/product', params)
+      response = await update(params)
       message = 'atualizado'
     }
 

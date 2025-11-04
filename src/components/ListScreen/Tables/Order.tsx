@@ -3,7 +3,6 @@ import { OrderDetails } from '@/types/order'
 
 type TableOrderProps = {
   data: OrderDetails[]
-  handleDisableOrActiveOrder: (id: number, status: boolean) => void
 }
 
 export function TableOrder({ data }: TableOrderProps) {

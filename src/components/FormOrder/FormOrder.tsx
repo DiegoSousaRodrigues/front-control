@@ -23,11 +23,12 @@ import { useQuery } from '@tanstack/react-query'
 import { queryFetch } from '@/utils/queryFetch'
 import { ClientDetails } from '@/types/client'
 import { ProductDetails } from '@/types/products'
-import axios from 'axios'
 import Message from '../Message'
+import { add } from '@/api-client/order'
+import { showToastEvent } from '@/events/events'
 
 export function FormOrder() {
-  const { control, register, handleSubmit, getValues, formState, setError } = useForm<OrderData>()
+  const { control, register, handleSubmit, getValues, formState, setError, reset, setValue } = useForm<OrderData>()
   const { fields, append, remove } = useFieldArray({ control, name: 'products' })
 
   const { data: dataClient } = useQuery({
@@ -42,17 +43,20 @@ export function FormOrder() {
     refetchOnWindowFocus: false,
   })
 
-  const listClients = dataClient?.map((c) => ({ value: c.id, label: `${c.name} - ${c.street}, ${c.number}` }))
-
-  const listProduct = dataProduct?.map((p) => ({ value: p.id, label: p.name, price: p.price }))
-
-  function onSubmit(data: OrderData) {
+  async function onSubmit(data: OrderData) {
     if (!data.products.length) {
       setError('products', { type: 'required', message: 'Adicione ao menos um produto' })
       return
     }
 
-    axios.post('/api/order', data)
+    const response = await add(data)
+    if (response.status == 200) {
+      showToastEvent({ status: 'success', description: 'Produto adicionado com sucesso' })
+      reset()
+      setValue('clientId', 0)
+
+      fields.forEach((_, index) => remove(index))
+    }
   }
 
   function addProducts() {
@@ -64,6 +68,10 @@ export function FormOrder() {
       remove(index)
     }
   }
+
+  const listClients = dataClient?.map((c) => ({ value: c.id, label: `${c.name} - ${c.street}, ${c.number}` }))
+
+  const listProduct = dataProduct?.map((p) => ({ value: p.id, label: p.name, price: p.price }))
 
   return (
     <Wrapper>

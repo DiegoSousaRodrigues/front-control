@@ -3,7 +3,7 @@ import { queryFetch } from '@/utils/queryFetch'
 import { useQuery } from '@tanstack/react-query'
 import ListScreen from '../ListScreen'
 import TableClient from '../ListScreen/Tables/Client'
-import { disableOrActiveClient } from '@/utils/status'
+import { updateClientStatus } from '@/api-client/client'
 
 export function ClientScreen() {
   const { data, isLoading, refetch, isRefetching } = useQuery({
@@ -17,7 +17,7 @@ export function ClientScreen() {
   if (!data) return <>Dados não encontrados</>
 
   async function handleDisableOrActiveClient(id: number, status: boolean) {
-    await disableOrActiveClient(id, status)
+    await updateClientStatus(id, status)
     refetch()
   }
 
