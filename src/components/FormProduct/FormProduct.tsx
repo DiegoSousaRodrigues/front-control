@@ -1,6 +1,6 @@
 import { useForm } from 'react-hook-form'
-import { Input } from '../Input/Input'
-import Message from '../Message'
+import { Input } from '../lib/Input/Input'
+import Message from '../lib/Message'
 import { Button, Form, Title, Wrapper, WrapperInputs } from './FormProduct.styles'
 import { ProductData } from './FormProduct.types'
 import { required } from '@/utils/validate'

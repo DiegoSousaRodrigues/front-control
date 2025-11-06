@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Controller } from 'react-hook-form'
 import { OrderSkuLineProps } from './OrderSkuLine.types'
-import Select from '../Select'
-import { Input } from '../Input/Input'
+import Select from '../lib/Select'
+import { Input } from '../lib/Input/Input'
 import { MdDelete } from 'react-icons/md'
 import { useState, ChangeEvent } from 'react'
 import { BRLStringToNumber, numberToBRLString } from '@/utils/currency'
-import Message from '../Message'
+import Message from '../lib/Message'
 
 export function OrderSkuLine({ index, control, products, removeProduct, getValues }: OrderSkuLineProps) {
   const [price, setPrice] = useState<string>()

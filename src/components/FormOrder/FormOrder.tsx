@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { Controller, useFieldArray, useForm } from 'react-hook-form'
-import { Input } from '../Input/Input'
-import Select from '../Select'
+import { Input } from '../lib/Input/Input'
+import Select from '../lib/Select'
 import {
   Title,
   Wrapper,
@@ -23,7 +23,7 @@ import { useQuery } from '@tanstack/react-query'
 import { queryFetch } from '@/utils/queryFetch'
 import { ClientDetails } from '@/types/client'
 import { ProductDetails } from '@/types/products'
-import Message from '../Message'
+import Message from '../lib/Message'
 import { add } from '@/api-client/order'
 import { showToastEvent } from '@/events/events'
 
