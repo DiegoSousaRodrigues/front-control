@@ -28,11 +28,11 @@ import { add } from '@/api-client/order'
 import { showToastEvent } from '@/events/events'
 import { useState } from 'react'
 
+let clientIndex = 0
 export function FormOrder({ isSequence = false }: FormOrderProps) {
   const { control, register, handleSubmit, getValues, formState, setError, reset, setValue } = useForm<OrderData>()
   const { fields, append, remove } = useFieldArray({ control, name: 'products' })
   const [buttonText, setButtonText] = useState(isSequence ? 'Passar para o proximo cliente' : 'Cadastrar pedido')
-  const [clientIndex, setClientIndex] = useState(0)
 
   const { data: dataClient, isLoading } = useQuery({
     queryKey: ['client/list'],
@@ -48,7 +48,8 @@ export function FormOrder({ isSequence = false }: FormOrderProps) {
   async function onSubmit(data: OrderData) {
     if (!data.products.length) {
       if (isSequence) {
-        setClientIndex(clientIndex + 1)
+        clientIndex++
+        setValue('clientId', listClients?.[clientIndex]?.value?.toString() || '')
         return
       }
 
@@ -63,8 +64,6 @@ export function FormOrder({ isSequence = false }: FormOrderProps) {
       setValue('clientId', '')
 
       fields.forEach((_, index) => remove(index))
-
-      setClientIndex(clientIndex + 1)
     }
   }
 
@@ -101,14 +100,14 @@ export function FormOrder({ isSequence = false }: FormOrderProps) {
                 control={control}
                 name='clientId'
                 rules={{ required: 'Campo obrigatorio' }}
-                defaultValue={listClients?.[clientIndex]?.value?.toString()}
+                defaultValue={listClients?.[0]?.value?.toString()}
                 render={({ field: { onChange, value } }) => (
                   <Select
                     label='Selecione um cliente'
                     items={listClients || []}
                     value={value}
                     onChange={onChange}
-                    defaultValue={listClients?.[clientIndex]?.value?.toString()}
+                    defaultValue={listClients?.[0]?.value?.toString()}
                   />
                 )}
               />
