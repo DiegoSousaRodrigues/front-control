@@ -1,6 +1,10 @@
 import { ClientData } from '@/components/FormClient/FormClient.types'
 import axios from 'axios'
 
+export async function listAll() {
+  return await axios.get('/api/client/list')
+}
+
 export async function updateClientStatus(id: number, status: boolean) {
   await axios.post(
     `/api/client/status`,
