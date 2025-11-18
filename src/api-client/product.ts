@@ -1,4 +1,3 @@
-import { ProductData } from '@/components/FormProduct/FormProduct.types'
 import axios from 'axios'
 
 export async function updateProductStatus(id: number, status: boolean) {
@@ -14,10 +13,10 @@ export async function updateProductStatus(id: number, status: boolean) {
   )
 }
 
-export async function add(data: ProductData) {
+export async function add(data: FormData) {
   return await axios.post('/api/product', data)
 }
 
-export async function update(data: ProductData) {
+export async function update(data: FormData) {
   return await axios.put('/api/product', data)
 }

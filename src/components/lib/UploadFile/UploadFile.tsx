@@ -2,49 +2,52 @@
 import { MdUploadFile } from 'react-icons/md'
 import { FaTrash } from 'react-icons/fa'
 import { UploadFileProps } from './UploadFile.types'
-import { useState } from 'react'
 import Image from 'next/image'
+import { useEffect, useState } from 'react'
 
-export function UploadFile({ label, onChange }: UploadFileProps) {
-  const [imagePreview, setImagePreview] = useState<string | null>(null)
+export function UploadFile({ label, value, onChange }: UploadFileProps) {
+  const [preview, setPreview] = useState<string>('')
+
+  useEffect(() => {
+    if (!value) {
+      setPreview('')
+      return
+    }
+
+    const objectUrl = typeof value === 'string' ? value : URL.createObjectURL(value)
+    setPreview(objectUrl)
+
+    return () => {
+      if (typeof value !== 'string') URL.revokeObjectURL(objectUrl)
+    }
+  }, [value])
 
   function handleOnChange(event: any) {
     const files = event.target.files
     if (files && files[0]) {
-      const fileName = files[0].name
       const file = files[0]
 
-      if (imagePreview) {
-        URL.revokeObjectURL(imagePreview)
+      if (!file || !file.type.startsWith('image/')) {
+        alert('Por favor, selecione apenas arquivos de imagem.')
       }
 
-      if (file && file.type.startsWith('image/')) {
-        setImagePreview(URL.createObjectURL(file))
-      } else {
-        setImagePreview(null)
-        if (file) {
-          alert('Por favor, selecione apenas arquivos de imagem.')
-        }
-      }
-
-      onChange(fileName)
+      onChange(file)
     }
   }
 
   function reset() {
-    onChange('')
-    setImagePreview(null)
+    onChange(undefined)
   }
 
   return (
     <div className='flex flex-col'>
       <span className='text-xs text-primary px-2'>{label}</span>
-      {imagePreview ? (
+      {value ? (
         <button type='button' onClick={reset} className='group w-fit relative'>
           <div className='group-hover:flex bg-error opacity-40 w-full h-full absolute rounded-lg hidden items-center justify-center'>
             <FaTrash size={24} className='fill-black' />
           </div>
-          <Image className='rounded-lg' src={imagePreview} alt='Preview do arquivo' width={260} height={120} />
+          <Image className='rounded-lg' src={preview} alt='Preview do arquivo' width={260} height={120} />
         </button>
       ) : (
         <label
@@ -57,13 +60,6 @@ export function UploadFile({ label, onChange }: UploadFileProps) {
       )}
 
       <input id='upload-arquivo' onChange={handleOnChange} type='file' className='hidden' />
-      <button
-        className='w-fit border border-primary border-solid text-primary px-4 py-2 rounded-lg'
-        type='button'
-        onClick={reset}
-      >
-        Apagar arquivo
-      </button>
     </div>
   )
 }
