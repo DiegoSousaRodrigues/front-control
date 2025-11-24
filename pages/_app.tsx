@@ -1,9 +1,11 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import type { AppProps } from 'next/app'
 import MainLayout from '@/layout/MainLayout/MainLayout'
 import '@/styles/globals.css'
 import '@radix-ui/themes/styles.css'
 import { MainProvider } from '@/contexts/MainContext'
+import { AppProps } from 'next/app'
+import { LayoutEnum } from '@/types/pageProps'
+import { Fragment } from 'react'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -15,12 +17,13 @@ const queryClient = new QueryClient({
 })
 
 export default function MyApp({ Component, pageProps }: AppProps) {
+  const Layout = pageProps.layout == LayoutEnum.NONE ? Fragment : MainLayout
   return (
     <QueryClientProvider client={queryClient}>
       <MainProvider>
-        <MainLayout>
+        <Layout>
           <Component {...pageProps} />
-        </MainLayout>
+        </Layout>
       </MainProvider>
     </QueryClientProvider>
   )
