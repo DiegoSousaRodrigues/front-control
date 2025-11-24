@@ -2,11 +2,11 @@ import { useForm } from 'react-hook-form'
 import { Form, Title, Wrapper, WrapperInputs, FlexInputs, Button } from './FormClient.styles'
 import { ClientData } from './FormClient.types'
 import { required } from '@/utils/validate'
-import Message from '../Message'
-import axios from 'axios'
-import { Input } from '../Input/Input'
+import Message from '../lib/Message'
+import { Input } from '../lib/Input/Input'
 import { ClientDetails } from '@/types/client'
 import { showToastEvent } from '@/events/events'
+import { add, update } from '@/api-client/client'
 
 export function FormClient({ props, type }: { props?: ClientDetails; type: 'edit' | 'add' }) {
   const { register, handleSubmit, formState, reset } = useForm<ClientData>({ defaultValues: props })
@@ -16,10 +16,10 @@ export function FormClient({ props, type }: { props?: ClientDetails; type: 'edit
     let message
 
     if (type === 'add') {
-      response = await axios.post('/api/client', params)
+      response = await add(params)
       message = 'adicionado'
     } else if (type === 'edit') {
-      response = await axios.put('/api/client', params)
+      response = await update(params)
       message = 'atualizado'
     }
 

@@ -3,4 +3,6 @@ export type ProductDetails = {
   name: string
   price: string
   active: boolean
+  file: File
+  showOnWebsite: string
 }

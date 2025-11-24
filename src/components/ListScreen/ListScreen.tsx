@@ -39,10 +39,7 @@ export function ListScreen({ title, children }: PropsWithChildren<ListScreenProp
 
         {/* TODO fazer o seach aqui depois ??Talvez componentizar?? */}
       </Header>
-      <TableRoot layout='fixed'>
-        {children}
-        {/* {isProduct && <TableProduct data={data as ProductDetails[]} />} */}
-      </TableRoot>
+      <TableRoot layout='fixed'>{children}</TableRoot>
     </Wrapper>
   )
 }

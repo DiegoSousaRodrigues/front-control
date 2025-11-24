@@ -3,7 +3,7 @@ import { SelectProps } from './Select.types'
 import { Content, Group, Item, Label, Portal, Root, Trigger, Viewport, Wrapper } from './Select.styles'
 import { forwardRef } from 'react'
 
-export function Select({ label, items, onChange, value }: SelectProps) {
+export function Select({ label, items, onChange, value, disabled = false, defaultValue }: SelectProps) {
   function handleOnChange(value: string | number) {
     onChange(value)
   }
@@ -11,7 +11,12 @@ export function Select({ label, items, onChange, value }: SelectProps) {
   return (
     <Wrapper>
       <Label>{label}</Label>
-      <Root onValueChange={(value) => handleOnChange(value)} value={value as string}>
+      <Root
+        disabled={disabled}
+        onValueChange={(value) => handleOnChange(value)}
+        value={(items.length === 1 ? items[0].value : value).toString()}
+        defaultValue={defaultValue}
+      >
         <Trigger>
           <SelectComponent.Value />
         </Trigger>

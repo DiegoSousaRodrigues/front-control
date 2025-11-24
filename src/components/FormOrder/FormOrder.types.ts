@@ -1,5 +1,9 @@
+export type FormOrderProps = {
+  isSequence?: boolean
+}
+
 export type OrderData = {
-  clientId: number
+  clientId: string
   observation: string
   productId: number
   products: Product[]

@@ -37,6 +37,10 @@ export const menu = [
         name: 'Listar',
         url: 'list',
       },
+      {
+        name: 'Sequencia',
+        url: 'queue',
+      },
     ],
   },
   {

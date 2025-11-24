@@ -1,23 +1,36 @@
-import { create, update } from '@/services/product'
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextApiRequest, NextApiResponse } from 'next'
+import axios from 'axios'
+
+export const config = {
+  api: {
+    bodyParser: false,
+  },
+}
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method === 'POST') {
-    const data = req.body
-    const response = await create(data)
-    if (response.status === 200) {
-      res.status(200).json(response.data)
-    } else {
-      res.status(500).json('Error to add client')
-    }
-  }
-  if (req.method === 'PUT') {
-    const data = req.body
-    const response = await update(data, '1')
-    if (response.status === 200) {
-      res.status(200).json(response.data)
-    } else {
-      res.status(500).json('Error to update client')
-    }
+  // Definimos a URL do Go.
+  // Se for PUT (update), você precisará ajustar para pegar o ID da query string, ex: req.query.id
+  // Como seu exemplo anterior estava fixo ou focado no POST, vamos apontar para a base:
+  const backendUrl = 'http://localhost:3001/sku'
+
+  try {
+    const response = await axios({
+      method: req.method,
+      url: backendUrl,
+      data: req,
+      headers: {
+        'Content-Type': req.headers['content-type'],
+      },
+      responseType: 'stream',
+      validateStatus: () => true,
+    })
+
+    res.status(response.status)
+
+    response.data.pipe(res)
+  } catch (error: any) {
+    console.error('Erro no stream:', error.message)
+    res.status(500).json({ error: 'Erro ao conectar com o backend.' })
   }
 }
