@@ -70,6 +70,7 @@ export function FormProduct({ props, type }: { props?: ProductDetails; type: 'ed
   return (
     <Wrapper>
       <Title>Adicionar produto</Title>
+
       <Form onSubmit={handleSubmit(onSubmit)}>
         <div className='flex gap-4'>
           <WrapperInputs>
@@ -80,10 +81,6 @@ export function FormProduct({ props, type }: { props?: ProductDetails; type: 'ed
           <WrapperInputs>
             <Input label='Preço:' mask='currency' {...register('price', required('Preço'))} />
             {formState.errors.name && <Message>{formState.errors.name.message}</Message>}
-          </WrapperInputs>
-
-          <WrapperInputs>
-            <input type='checkbox' />
           </WrapperInputs>
         </div>
 

@@ -1,4 +1,3 @@
-import { ProductData } from '@/components/FormProduct/FormProduct.types'
 import { ProductDetails } from '@/types/products'
 import { apiControl } from '@/utils/api'
 
@@ -6,10 +5,8 @@ export async function findAll() {
   return await apiControl.get<ProductDetails[]>('sku/list')
 }
 
-export async function create(body: ProductData, contentType?: string) {
-  return await apiControl.post('sku', body, {
-    headers: { 'Content-Type': contentType },
-  })
+export async function create(body: FormData) {
+  return await apiControl.post('sku', body)
 }
 
 export async function update(body: ProductDetails, id: string, contentType?: string) {
