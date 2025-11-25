@@ -1,12 +1,13 @@
 import { useForm } from 'react-hook-form'
 import { Input } from '../lib/Input/Input'
 import { LoginForm } from './LoginScreen.types'
+import axios from 'axios'
 
 export function LoginScreen() {
   const { register, handleSubmit } = useForm<LoginForm>()
 
   function onSubmit(data: LoginForm) {
-    console.log(data)
+    axios.post('api/login', data)
   }
 
   return (
