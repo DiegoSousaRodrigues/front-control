@@ -2,8 +2,10 @@ import { ClientData } from '@/components/FormClient/FormClient.types'
 import { ClientDetails } from '@/types/client'
 import { apiControl } from '@/utils/api'
 
-export async function findAll() {
-  return await apiControl.get<ClientDetails[]>('client/list')
+export async function findAll(session: string) {
+  return await apiControl.get<ClientDetails[]>('client/list', {
+    headers: { Authorization: session },
+  })
 }
 
 export async function create(body: ClientData) {

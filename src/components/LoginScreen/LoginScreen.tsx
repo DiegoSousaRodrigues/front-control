@@ -1,13 +1,14 @@
 import { useForm } from 'react-hook-form'
 import { Input } from '../lib/Input/Input'
 import { LoginForm } from './LoginScreen.types'
-import axios from 'axios'
+import { useAuth } from '@/contexts/AuthContext'
 
 export function LoginScreen() {
   const { register, handleSubmit } = useForm<LoginForm>()
+  const { signIn } = useAuth()
 
-  function onSubmit(data: LoginForm) {
-    axios.post('api/login', data)
+  async function onSubmit(data: LoginForm) {
+    await signIn(data)
   }
 
   return (
