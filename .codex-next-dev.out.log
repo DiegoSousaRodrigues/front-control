@@ -6,17 +6,15 @@
    - Local:        http://localhost:3000
 
  ✓ Starting...
- ✓ Ready in 1678ms
- ○ Compiling /login ...
- ✓ Compiled /login in 666ms (612 modules)
- HEAD /login 200 in 1379ms
- ○ Compiling /client/list ...
- ✓ Compiled /client/list in 951ms (842 modules)
- ✓ Compiled /_error in 156ms (844 modules)
- GET /client/list 404 in 1146ms
- GET /client/list 404 in 8ms
- GET /client/list 404 in 8ms
- GET /client/list 404 in 7ms
- GET /client/list 404 in 7ms
- GET /client/list 404 in 7ms
- GET /client/list 404 in 4ms
+ ✓ Ready in 1573ms
+ ○ Compiling /_error ...
+ ✓ Compiled /_error in 1133ms (596 modules)
+ GET /_next/static/webpack/fe809fc8f871140f.webpack.hot-update.json 404 in 1793ms
+ GET /_next/static/webpack/fe809fc8f871140f.webpack.hot-update.json 404 in 18ms
+ ✓ Compiled /login in 313ms (608 modules)
+ GET /_next/static/webpack/fe809fc8f871140f.webpack.hot-update.json 404 in 244ms
+ GET /login 200 in 474ms
+ GET /_next/static/webpack/fe809fc8f871140f.webpack.hot-update.json 404 in 10ms
+ GET /login 200 in 21ms
+ GET /login 200 in 8ms
+ ✓ Compiled in 209ms (606 modules)
