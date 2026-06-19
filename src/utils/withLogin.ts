@@ -1,11 +1,19 @@
-import { useAuth } from '@/contexts/AuthContext'
+import { GetServerSidePropsContext } from 'next'
+import { parseCookies } from 'nookies'
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
-export default function WithLogin(cb: any) {
-  const auth = useAuth()
-  if (auth.isAuthenticated) {
-    cb()
-  } else {
-    //TODO redirect to loginScreen
+export default function withLogin(context: GetServerSidePropsContext) {
+  const { 'control-token': token } = parseCookies(context)
+
+  if (!token) {
+    return {
+      redirect: {
+        destination: '/login',
+        permanent: false,
+      },
+    }
+  }
+
+  return {
+    props: {},
   }
 }
