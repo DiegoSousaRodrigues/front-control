@@ -1,16 +1,18 @@
 import { findAll } from '@/services/client'
+import { handleBackendError, rejectWithoutToken } from '@/utils/apiRoute'
+import { getRequestToken } from '@/utils/serverAuth'
 import { NextApiRequest, NextApiResponse } from 'next'
-import { parseCookies } from 'nookies'
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === 'GET') {
-    const { 'control-token': token } = parseCookies({ req })
-    const response = await findAll(token)
+    const token = getRequestToken(req)
+    if (rejectWithoutToken(res, token)) return
 
-    if (response.status === 200) {
+    try {
+      const response = await findAll(token)
       res.status(200).json(response.data)
-    } else {
-      res.status(500).json('Error to find all client')
+    } catch (error) {
+      handleBackendError(error, res)
     }
   }
 }

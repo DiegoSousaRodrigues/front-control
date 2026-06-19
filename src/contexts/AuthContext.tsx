@@ -44,7 +44,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       setUser(user)
 
-      router.push('/')
+      router.push('/home')
     } catch (error) {
       console.error('Login failed:', error)
       throw error

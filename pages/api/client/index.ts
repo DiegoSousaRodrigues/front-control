@@ -1,23 +1,28 @@
 import { create, update } from '@/services/client'
+import { handleBackendError, rejectWithoutToken } from '@/utils/apiRoute'
+import { getRequestToken } from '@/utils/serverAuth'
 import { NextApiRequest, NextApiResponse } from 'next'
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  const token = getRequestToken(req)
+  if (rejectWithoutToken(res, token)) return
+
   if (req.method === 'POST') {
-    const data = req.body
-    const response = await create(data)
-    if (response.status === 200) {
+    try {
+      const data = req.body
+      const response = await create(data, token)
       res.status(200).json(response.data)
-    } else {
-      res.status(500).json('Error to add client')
+    } catch (error) {
+      handleBackendError(error, res)
     }
   }
   if (req.method === 'PUT') {
-    const data = req.body
-    const response = await update(data, '1')
-    if (response.status === 200) {
+    try {
+      const data = req.body
+      const response = await update(data, '1', token)
       res.status(200).json(response.data)
-    } else {
-      res.status(500).json('Error to update client')
+    } catch (error) {
+      handleBackendError(error, res)
     }
   }
 }

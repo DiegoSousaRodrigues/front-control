@@ -1,6 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { getRequestToken } from '@/utils/serverAuth'
 import { NextApiRequest, NextApiResponse } from 'next'
 import axios from 'axios'
+import { getAuthHeader } from '@/utils/auth'
+import { rejectWithoutToken } from '@/utils/apiRoute'
 
 export const config = {
   api: {
@@ -13,6 +16,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   // Se for PUT (update), você precisará ajustar para pegar o ID da query string, ex: req.query.id
   // Como seu exemplo anterior estava fixo ou focado no POST, vamos apontar para a base:
   const backendUrl = 'http://localhost:3001/sku'
+  const token = getRequestToken(req)
+  if (rejectWithoutToken(res, token)) return
 
   try {
     const response = await axios({
@@ -21,6 +26,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       data: req,
       headers: {
         'Content-Type': req.headers['content-type'],
+        ...getAuthHeader(token),
       },
       responseType: 'stream',
       validateStatus: () => true,

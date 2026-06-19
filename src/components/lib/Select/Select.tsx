@@ -13,7 +13,7 @@ export function Select({ label, items, onChange, value, disabled = false, defaul
       <Label>{label}</Label>
       <Root
         disabled={disabled}
-        onValueChange={(value) => handleOnChange(value)}
+        onValueChange={(value: string) => handleOnChange(value)}
         value={(items.length === 1 ? items[0].value : value).toString()}
         defaultValue={defaultValue}
       >
