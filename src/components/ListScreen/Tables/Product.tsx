@@ -14,9 +14,11 @@ import { MdBlock, MdLockOpen, MdOutlineModeEditOutline } from 'react-icons/md'
 export function TableProduct({
   data,
   handleDisableOrActiveProduct,
+  pendingStatusProductIds = [],
 }: {
   data: ProductDetails[]
   handleDisableOrActiveProduct: (id: number, status: boolean) => void
+  pendingStatusProductIds?: number[]
 }) {
   return (
     <>
@@ -36,7 +38,10 @@ export function TableProduct({
                 <Link href={`/product/edit/${id}`}>
                   <MdOutlineModeEditOutline size={24} />
                 </Link>
-                <Button onClick={() => handleDisableOrActiveProduct(id, active)}>
+                <Button
+                  disabled={pendingStatusProductIds.includes(id)}
+                  onClick={() => handleDisableOrActiveProduct(id, active)}
+                >
                   {active ? (
                     <MdBlock size={24} className='fill-error' />
                   ) : (

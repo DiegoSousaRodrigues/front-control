@@ -5,6 +5,7 @@ import axios from 'axios'
 import { getAuthHeader } from '@/utils/auth'
 import { rejectWithoutToken } from '@/utils/apiRoute'
 import { parsePositiveId } from '@/utils/positiveId'
+import { getApiControlBaseUrl } from '@/utils/apiBaseUrl'
 
 const MAX_MULTIPART_BYTES = 10 * 1024 * 1024
 const BACKEND_TIMEOUT_MS = 15000
@@ -21,7 +22,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(405).json({ error: 'Method not allowed' })
   }
 
-  let backendUrl = 'http://localhost:3001/sku'
+  let backendUrl = `${getApiControlBaseUrl()}/sku`
   if (req.method === 'PUT') {
     const productId = parsePositiveId(req.query.id)
     if (!productId) {

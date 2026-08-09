@@ -125,7 +125,13 @@ O projeto utiliza as API Routes do Next.js para criar endpoints backend simples 
   - `GET /list`: Obter lista de todos os pedidos.
   - _(Rotas POST/PUT para pedidos parecem estar definidas nos services mas não nas API routes)_
 
-Estas rotas internas geralmente fazem proxy para uma API externa configurada em `src/utils/api.ts` (`apiControl`), que aponta para `http://localhost:3001/`.
+Estas rotas internas fazem proxy para a API Go configurada pela variável server-side `API_CONTROL_BASE_URL`, lida por `src/utils/apiBaseUrl.ts`. O browser deve continuar chamando somente as rotas same-origin `/api/*`; não exponha a URL privada da API Go em variável `NEXT_PUBLIC_*`.
+
+Exemplo local sem valores sensíveis:
+
+```env
+API_CONTROL_BASE_URL=http://localhost:3001
+```
 
 ## Componentes Principais
 

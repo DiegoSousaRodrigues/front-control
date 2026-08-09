@@ -26,6 +26,7 @@ function createResponse() {
 describe('product API route', () => {
   beforeEach(() => {
     vi.clearAllMocks()
+    process.env.API_CONTROL_BASE_URL = 'http://api-control.test'
   })
 
   it.each(['1', '2'])('forwards PUT for product ID %s to /sku/:id', async (id) => {
@@ -43,7 +44,7 @@ describe('product API route', () => {
     expect(axios).toHaveBeenCalledWith(
       expect.objectContaining({
         method: 'PUT',
-        url: `http://localhost:3001/sku/${id}`,
+        url: `http://api-control.test/sku/${id}`,
         data: request,
       })
     )
@@ -65,7 +66,7 @@ describe('product API route', () => {
     expect(axios).toHaveBeenCalledWith(
       expect.objectContaining({
         method: 'POST',
-        url: 'http://localhost:3001/sku',
+        url: 'http://api-control.test/sku',
         data: request,
       })
     )

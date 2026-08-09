@@ -14,9 +14,10 @@ import { MdBlock, MdLockOpen, MdOutlineModeEditOutline } from 'react-icons/md'
 type TableClientProps = {
   data: ClientDetails[]
   handleDisableOrActiveClient: (id: number, status: boolean) => void
+  pendingStatusClientIds?: number[]
 }
 
-export function TableClient({ data, handleDisableOrActiveClient }: TableClientProps) {
+export function TableClient({ data, handleDisableOrActiveClient, pendingStatusClientIds = [] }: TableClientProps) {
   return (
     <>
       <TableHeader>
@@ -40,7 +41,10 @@ export function TableClient({ data, handleDisableOrActiveClient }: TableClientPr
                 <Link href={`/client/edit/${id}`}>
                   <MdOutlineModeEditOutline size={24} />
                 </Link>
-                <Button onClick={() => handleDisableOrActiveClient(id, active)}>
+                <Button
+                  disabled={pendingStatusClientIds.includes(id)}
+                  onClick={() => handleDisableOrActiveClient(id, active)}
+                >
                   {active ? (
                     <MdBlock size={24} className='fill-error' />
                   ) : (
