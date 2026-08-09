@@ -30,7 +30,7 @@ export function TableClient({ data, handleDisableOrActiveClient }: TableClientPr
       </TableHeader>
       <TableBody>
         {data?.map(({ name, document, phone, street, id, active }) => (
-          <TableRow key={`${name + street}`}>
+          <TableRow key={id}>
             <TableRowHeaderCell>{name}</TableRowHeaderCell>
             <TableCell>{document}</TableCell>
             <TableCell>{phone}</TableCell>

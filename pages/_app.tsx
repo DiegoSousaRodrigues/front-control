@@ -10,8 +10,9 @@ import { Fragment } from 'react'
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      retry: false,
-      refetchOnMount: false,
+      staleTime: 30_000,
+      retry: 1,
+      refetchOnMount: true,
     },
   },
 })

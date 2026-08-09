@@ -1,7 +1,6 @@
 import { createContext, ReactNode, useContext, useState, useEffect } from 'react'
-import { setCookie, parseCookies, destroyCookie } from 'nookies'
 import { useRouter } from 'next/router'
-import { login as loginRequest } from '@/services/login'
+import { login as loginRequest, logout as logoutRequest } from '@/services/login'
 import { LoginForm } from '@/components/LoginScreen/LoginScreen.types'
 import { UserProps } from '@/types/login'
 
@@ -20,40 +19,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const router = useRouter()
 
   useEffect(() => {
-    const { 'control-user': userCookie } = parseCookies()
-
-    if (userCookie) {
-      setUser(JSON.parse(userCookie))
-    }
+    setUser(null)
   }, [])
 
   async function signIn({ login, password }: LoginForm) {
-    try {
-      const response = await loginRequest({ login, password })
-      const { token, user } = response.data
+    const response = await loginRequest({ login, password })
+    const { user } = response.data
 
-      setCookie(undefined, 'control-token', token, {
-        maxAge: 60 * 60 * 24 * 30, // 30 days
-        path: '/',
-      })
+    setUser(user)
 
-      setCookie(undefined, 'control-user', JSON.stringify(user), {
-        maxAge: 60 * 60 * 24 * 30, // 30 days
-        path: '/',
-      })
-
-      setUser(user)
-
-      router.push('/home')
-    } catch (error) {
-      console.error('Login failed:', error)
-      throw error
-    }
+    router.push('/home')
   }
 
   function signOut() {
-    destroyCookie(undefined, 'control-token')
-    destroyCookie(undefined, 'control-user')
+    void logoutRequest()
     setUser(null)
     router.push('/login')
   }

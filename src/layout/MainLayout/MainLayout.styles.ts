@@ -1,16 +1,16 @@
 import NextLink from 'next/link'
 import * as Accordion from '@radix-ui/react-accordion'
-import { MdOutlineKeyboardArrowDown, MdOutlineKeyboardArrowRight } from 'react-icons/md'
+import { MdLogout, MdOutlineKeyboardArrowDown, MdOutlineKeyboardArrowRight } from 'react-icons/md'
 import styled, { w } from 'windstitch'
 
 export const Wrapper = w.div('flex bg-gray-100 h-full')
 
-export const Content = w.div('w-1/5 px-4 py-2 bg-white')
+export const Content = w.div('w-1/5 px-4 py-2 bg-white flex flex-col')
 
 export const WrapperImage = w.div('w-full flex gap-4 justify-center')
 
 export const AccordionRoot = styled(Accordion.Root, {
-  className: 'flex flex-col gap-4 px-2 py-2',
+  className: 'flex flex-col gap-4 px-2 py-2 flex-1',
 })
 
 export const AccordionItem = styled(Accordion.Item, {
@@ -46,3 +46,11 @@ export const AccordionContent = styled(Accordion.Content, {
 export const LinkStyled = styled(NextLink, {
   className: 'flex px-4 py-2 w-full jus justify-between items-center rounded-md hover:bg-gray-100',
 })
+
+export const SessionActions = w.div('border-t border-gray-100 px-2 py-4')
+
+export const LogoutButton = w.button(
+  'flex w-full items-center justify-between rounded-md px-4 py-3 text-sm font-bold text-gray-700 hover:bg-gray-100 hover:text-primary'
+)
+
+export const LogoutIcon = styled(MdLogout, {})

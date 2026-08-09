@@ -1,4 +1,5 @@
 import Container from '@/components/lib/Container'
+import { useAuth } from '@/contexts/AuthContext'
 import {
   AccordionContent,
   AccordionHeader,
@@ -10,7 +11,10 @@ import {
   Content,
   Empty,
   LinkStyled,
+  LogoutButton,
+  LogoutIcon,
   MainArrow,
+  SessionActions,
   Title,
   Wrapper,
   WrapperImage,
@@ -20,6 +24,8 @@ import { icons, menu } from './menu'
 import Image from 'next/image'
 
 export default function MainLayout({ children }: { children: React.ReactNode }) {
+  const { signOut } = useAuth()
+
   return (
     <Wrapper>
       <Content>
@@ -54,6 +60,12 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
             )
           })}
         </AccordionRoot>
+        <SessionActions>
+          <LogoutButton type='button' onClick={signOut} aria-label='Encerrar sessão'>
+            <span>Sair</span>
+            <LogoutIcon size={20} />
+          </LogoutButton>
+        </SessionActions>
       </Content>
       <Container>{children}</Container>
     </Wrapper>

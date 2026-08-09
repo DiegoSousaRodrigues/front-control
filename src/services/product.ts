@@ -14,7 +14,7 @@ export async function create(body: FormData, session?: string) {
   })
 }
 
-export async function update(body: ProductDetails, id: string, contentType?: string, session?: string) {
+export async function update(body: FormData, id: string, contentType?: string, session?: string) {
   return await apiControl.put(`sku/${id}`, body, {
     headers: { ...getAuthHeader(session), ...(contentType ? { 'Content-Type': contentType } : {}) },
   })

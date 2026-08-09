@@ -4,9 +4,10 @@ import ListScreen from '../ListScreen'
 import { TableProduct } from '../ListScreen/Tables/Product'
 import { ProductDetails } from '@/types/products'
 import { updateProductStatus } from '@/api-client/product'
+import { showToastEvent } from '@/events/events'
 
 export function ProductScreen() {
-  const { data, isLoading, refetch } = useQuery({
+  const { data, isLoading, refetch, isError, error } = useQuery({
     queryKey: ['product/list'],
     queryFn: queryFetch<ProductDetails[]>,
     refetchOnWindowFocus: false,
@@ -14,11 +15,28 @@ export function ProductScreen() {
 
   if (isLoading) return <>Carregando...</>
 
-  if (!data) return <>Dados não encontrados</>
+  if (isError) {
+    return (
+      <div>
+        <p>Erro ao carregar produtos: {error instanceof Error ? error.message : 'erro desconhecido'}</p>
+        <button type='button' onClick={() => refetch()}>
+          Tentar novamente
+        </button>
+      </div>
+    )
+  }
+
+  if (!data?.length) return <>Nenhum produto encontrado</>
 
   async function handleDisableOrActiveProduct(id: number, status: boolean) {
-    await updateProductStatus(id, status)
-    refetch()
+    try {
+      await updateProductStatus(id, status)
+      showToastEvent({ status: 'success', description: 'Status do produto atualizado' })
+    } catch {
+      showToastEvent({ status: 'error', description: 'Erro ao atualizar status do produto' })
+    } finally {
+      await refetch()
+    }
   }
 
   return (

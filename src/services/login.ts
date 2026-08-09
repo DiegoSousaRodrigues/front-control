@@ -1,7 +1,11 @@
 import { LoginForm } from '@/components/LoginScreen/LoginScreen.types'
-import { User } from '@/types/login'
-import { apiControl } from '@/utils/api'
+import { UserProps } from '@/types/login'
+import axios from 'axios'
 
 export async function login(body: LoginForm) {
-  return await apiControl.post<User>('/auth/login', body)
+  return await axios.post<{ user: UserProps }>('/api/auth/login', body)
+}
+
+export async function logout() {
+  return await axios.post('/api/auth/logout')
 }

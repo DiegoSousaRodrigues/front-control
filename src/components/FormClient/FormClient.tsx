@@ -1,4 +1,6 @@
+import { useState } from 'react'
 import { useForm } from 'react-hook-form'
+import { useQueryClient } from '@tanstack/react-query'
 import { Form, Title, Wrapper, WrapperInputs, FlexInputs, Button } from './FormClient.styles'
 import { ClientData } from './FormClient.types'
 import { required } from '@/utils/validate'
@@ -10,31 +12,47 @@ import { add, update } from '@/api-client/client'
 
 export function FormClient({ props, type }: { props?: ClientDetails; type: 'edit' | 'add' }) {
   const { register, handleSubmit, formState, reset } = useForm<ClientData>({ defaultValues: props })
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const queryClient = useQueryClient()
+  const isEdit = type === 'edit'
 
   async function onSubmit(params: ClientData) {
-    let response
-    let message
-
-    if (type === 'add') {
-      response = await add(params)
-      message = 'adicionado'
-    } else if (type === 'edit') {
-      response = await update(params)
-      message = 'atualizado'
-    }
-
-    if (response?.status === 200) {
-      showToastEvent({ status: 'success', description: `Cliente ${message} com sucesso` })
+    try {
+      setIsSubmitting(true)
+      let response
+      let message
 
       if (type === 'add') {
-        reset()
+        response = await add(params)
+        message = 'adicionado'
+      } else {
+        if (!props?.id) {
+          showToastEvent({ status: 'error', description: 'Não foi possível identificar o cliente' })
+          return
+        }
+
+        response = await update(props.id, params)
+        message = 'atualizado'
       }
+
+      if (response?.status === 200) {
+        showToastEvent({ status: 'success', description: `Cliente ${message} com sucesso` })
+        await queryClient.invalidateQueries({ queryKey: ['client/list'] })
+
+        if (type === 'add') {
+          reset()
+        }
+      }
+    } catch {
+      showToastEvent({ status: 'error', description: 'Erro ao salvar cliente. Tente novamente.' })
+    } finally {
+      setIsSubmitting(false)
     }
   }
 
   return (
     <Wrapper>
-      <Title>Adicionar cliente</Title>
+      <Title>{isEdit ? 'Editar cliente' : 'Adicionar cliente'}</Title>
       <Form onSubmit={handleSubmit(onSubmit)}>
         <FlexInputs>
           <WrapperInputs>
@@ -75,7 +93,7 @@ export function FormClient({ props, type }: { props?: ClientDetails; type: 'edit
           </WrapperInputs>
 
           <WrapperInputs>
-            <Input label='Numero:' {...register('number', required('Numero'))} />
+            <Input label='Número:' {...register('number', required('Número'))} />
             {formState.errors.number && <Message>{formState.errors.number.message}</Message>}
           </WrapperInputs>
 
@@ -92,22 +110,23 @@ export function FormClient({ props, type }: { props?: ClientDetails; type: 'edit
         <FlexInputs>
           <WrapperInputs quantity={3}>
             <Input label='Tipo de endereço:' {...register('addressType', required('Tipo de endereço'))} />
-            {/* Transformar em Select */}
             {formState.errors.addressType && <Message>{formState.errors.addressType.message}</Message>}
           </WrapperInputs>
 
           <WrapperInputs quantity={3}>
-            <Input label='Referencia:' {...register('addressReference')} />
+            <Input label='Referência:' {...register('addressReference')} />
             {formState.errors.addressReference && <Message>{formState.errors.addressReference.message}</Message>}
           </WrapperInputs>
 
           <WrapperInputs quantity={3}>
-            <Input label='Posição:' mask='number-only' {...register('position')} />
+            <Input label='Posição:' mask='number-only' {...register('position', required('Posição'))} />
             {formState.errors.position && <Message>{formState.errors.position.message}</Message>}
           </WrapperInputs>
         </FlexInputs>
 
-        <Button>{type === 'add' ? 'Salvar' : 'Editar'} Cliente</Button>
+        <Button disabled={isSubmitting}>
+          {isSubmitting ? 'Salvando...' : `${isEdit ? 'Editar' : 'Salvar'} Cliente`}
+        </Button>
       </Form>
     </Wrapper>
   )

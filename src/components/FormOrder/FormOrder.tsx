@@ -17,22 +17,23 @@ import {
   FlexCol,
 } from './FormOrder.styles'
 import { FormOrderProps, OrderData } from './FormOrder.types'
-import uniqueId from 'lodash/uniqueId'
 import OrderSkuLine from '../OrderSkuLine'
-import { useQuery } from '@tanstack/react-query'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { queryFetch } from '@/utils/queryFetch'
 import { ClientDetails } from '@/types/client'
 import { ProductDetails } from '@/types/products'
 import Message from '../lib/Message'
 import { add } from '@/api-client/order'
 import { showToastEvent } from '@/events/events'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
-let clientIndex = 0
 export function FormOrder({ isSequence = false }: FormOrderProps) {
   const { control, register, handleSubmit, getValues, formState, setError, reset, setValue } = useForm<OrderData>()
-  const { fields, append, remove } = useFieldArray({ control, name: 'products' })
+  const { fields, append, remove, replace } = useFieldArray({ control, name: 'products' })
   const [buttonText, setButtonText] = useState(isSequence ? 'Passar para o proximo cliente' : 'Cadastrar pedido')
+  const [clientIndex, setClientIndex] = useState(0)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const queryClient = useQueryClient()
 
   const { data: dataClient, isLoading } = useQuery({
     queryKey: ['client/list'],
@@ -45,11 +46,43 @@ export function FormOrder({ isSequence = false }: FormOrderProps) {
     refetchOnWindowFocus: false,
   })
 
+  const listClients = dataClient?.map((c) => ({ value: c.id, label: `${c.name} - ${c.street}, ${c.number}` }))
+
+  const listProduct = dataProduct?.map((p) => ({ value: p.id, label: p.name, price: p.price }))
+
+  useEffect(() => {
+    if (!listClients?.length) {
+      setValue('clientId', '')
+      return
+    }
+
+    const boundedIndex = Math.min(clientIndex, listClients.length - 1)
+    setValue('clientId', listClients[boundedIndex].value.toString())
+  }, [clientIndex, listClients?.length, setValue])
+
+  function advanceSequenceClient() {
+    if (!isSequence || !listClients?.length) return
+
+    const nextIndex = clientIndex + 1
+    if (nextIndex >= listClients.length) {
+      showToastEvent({ status: 'success', description: 'Fila de clientes concluida' })
+      reset({ clientId: listClients[0].value.toString(), observation: '', products: [] })
+      replace([])
+      setClientIndex(0)
+      setButtonText('Passar para o proximo cliente')
+      return
+    }
+
+    setClientIndex(nextIndex)
+    reset({ clientId: listClients[nextIndex].value.toString(), observation: '', products: [] })
+    replace([])
+    setButtonText('Passar para o proximo cliente')
+  }
+
   async function onSubmit(data: OrderData) {
     if (!data.products.length) {
       if (isSequence) {
-        clientIndex++
-        setValue('clientId', listClients?.[clientIndex]?.value?.toString() || '')
+        advanceSequenceClient()
         return
       }
 
@@ -57,18 +90,30 @@ export function FormOrder({ isSequence = false }: FormOrderProps) {
       return
     }
 
-    const response = await add(data)
-    if (response.status == 200) {
-      showToastEvent({ status: 'success', description: 'Produto adicionado com sucesso' })
-      reset()
-      setValue('clientId', '')
+    try {
+      setIsSubmitting(true)
+      const response = await add(data)
+      if (response.status == 200 || response.status == 201) {
+        showToastEvent({ status: 'success', description: 'Pedido cadastrado com sucesso' })
+        await queryClient.invalidateQueries({ queryKey: ['order/list'] })
 
-      fields.forEach((_, index) => remove(index))
+        if (isSequence) {
+          advanceSequenceClient()
+        } else {
+          reset({ clientId: listClients?.[0]?.value?.toString() || '', observation: '', products: [] })
+          replace([])
+          setButtonText('Cadastrar pedido')
+        }
+      }
+    } catch {
+      showToastEvent({ status: 'error', description: 'Erro ao salvar pedido. Tente novamente.' })
+    } finally {
+      setIsSubmitting(false)
     }
   }
 
   function addProducts() {
-    append({ productId: 0, quantity: 0 })
+    append({ productId: 0, quantity: 1 })
     setButtonText('Cadastrar pedido')
   }
 
@@ -80,10 +125,6 @@ export function FormOrder({ isSequence = false }: FormOrderProps) {
       }
     }
   }
-
-  const listClients = dataClient?.map((c) => ({ value: c.id, label: `${c.name} - ${c.street}, ${c.number}` }))
-
-  const listProduct = dataProduct?.map((p) => ({ value: p.id, label: p.name, price: p.price }))
 
   if (isLoading) {
     return <>Carregando...</>
@@ -100,15 +141,8 @@ export function FormOrder({ isSequence = false }: FormOrderProps) {
                 control={control}
                 name='clientId'
                 rules={{ required: 'Campo obrigatorio' }}
-                defaultValue={listClients?.[0]?.value?.toString()}
                 render={({ field: { onChange, value } }) => (
-                  <Select
-                    label='Selecione um cliente'
-                    items={listClients || []}
-                    value={value}
-                    onChange={onChange}
-                    defaultValue={listClients?.[0]?.value?.toString()}
-                  />
+                  <Select label='Selecione um cliente' items={listClients || []} value={value} onChange={onChange} />
                 )}
               />
             </ClientSelectContainer>
@@ -126,7 +160,7 @@ export function FormOrder({ isSequence = false }: FormOrderProps) {
           {fields &&
             fields.map(({ id }, index) => (
               <OrderSkuLine
-                key={uniqueId('order-sku-line' + id)}
+                key={id}
                 index={index}
                 control={control}
                 removeProduct={removeProduct}
@@ -143,7 +177,7 @@ export function FormOrder({ isSequence = false }: FormOrderProps) {
             Adicionar mais produtos
           </AddButton>
 
-          <SubmitButton>{buttonText}</SubmitButton>
+          <SubmitButton disabled={isSubmitting}>{isSubmitting ? 'Salvando...' : buttonText}</SubmitButton>
         </ButtonsRow>
       </Form>
     </Wrapper>

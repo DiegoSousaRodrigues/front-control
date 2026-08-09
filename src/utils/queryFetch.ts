@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { QueryFunctionContext } from '@tanstack/react-query'
-import axios, { AxiosError } from 'axios'
+import axios from 'axios'
 
 export async function queryFetch<T = Record<string, any>>({ pageParam, queryKey, signal }: QueryFunctionContext) {
   const [url, params] = queryKey
@@ -16,11 +16,20 @@ export async function queryFetch<T = Record<string, any>>({ pageParam, queryKey,
         signal,
       })
     ).data
-  } catch (e: any) {
-    if (e.response.status !== 403) {
-      const error: AxiosError<{ message: string; time: string }> = e
-      console.log(error)
+  } catch (e) {
+    if (axios.isCancel(e)) {
+      throw e
     }
-    throw new Error(e.response.data)
+
+    if (axios.isAxiosError(e)) {
+      const message =
+        typeof e.response?.data === 'string'
+          ? e.response.data
+          : e.response?.data?.error || e.response?.data?.erro || e.message || 'Erro ao buscar dados'
+
+      throw new Error(message)
+    }
+
+    throw new Error('Erro inesperado ao buscar dados')
   }
 }

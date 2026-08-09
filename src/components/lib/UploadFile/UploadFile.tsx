@@ -29,6 +29,9 @@ export function UploadFile({ label, value, onChange }: UploadFileProps) {
 
       if (!file || !file.type.startsWith('image/')) {
         alert('Por favor, selecione apenas arquivos de imagem.')
+        event.target.value = ''
+        onChange(undefined)
+        return
       }
 
       onChange(file)
@@ -59,7 +62,7 @@ export function UploadFile({ label, value, onChange }: UploadFileProps) {
         </label>
       )}
 
-      <input id='upload-arquivo' onChange={handleOnChange} type='file' className='hidden' />
+      <input id='upload-arquivo' onChange={handleOnChange} type='file' accept='image/*' className='hidden' />
     </div>
   )
 }

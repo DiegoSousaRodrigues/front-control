@@ -5,7 +5,7 @@ import ListScreen from '../ListScreen'
 import TableOrder from '../ListScreen/Tables/Order'
 
 export function OrderScreen() {
-  const { data, isLoading, isRefetching } = useQuery({
+  const { data, isLoading, isRefetching, isError, error, refetch } = useQuery({
     queryKey: ['order/list'],
     queryFn: queryFetch<OrderDetails[]>,
     refetchOnWindowFocus: false,
@@ -13,7 +13,18 @@ export function OrderScreen() {
 
   if (isLoading || isRefetching) return <>Carregando...</>
 
-  if (!data) return <>Dados não encontrados</>
+  if (isError) {
+    return (
+      <div>
+        <p>Erro ao carregar pedidos: {error instanceof Error ? error.message : 'erro desconhecido'}</p>
+        <button type='button' onClick={() => refetch()}>
+          Tentar novamente
+        </button>
+      </div>
+    )
+  }
+
+  if (!data?.length) return <>Nenhum pedido encontrado</>
 
   return (
     <ListScreen title={`Total: ${data.length} pedidos`}>
