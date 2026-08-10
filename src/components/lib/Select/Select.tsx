@@ -1,24 +1,26 @@
 import * as SelectComponent from '@radix-ui/react-select'
 import { SelectProps } from './Select.types'
 import { Content, Group, Item, Label, Portal, Root, Trigger, Viewport, Wrapper } from './Select.styles'
-import { forwardRef } from 'react'
+import { forwardRef, useId } from 'react'
 import { resolveSelectValue } from './Select.utils'
 
 export function Select({ label, items, onChange, value, disabled = false, defaultValue }: SelectProps) {
+  const triggerId = useId()
+
   function handleOnChange(value: string | number) {
     onChange(value)
   }
 
   return (
     <Wrapper>
-      <Label>{label}</Label>
+      <Label htmlFor={triggerId}>{label}</Label>
       <Root
         disabled={disabled}
         onValueChange={(value: string) => handleOnChange(value)}
         value={resolveSelectValue(items, value)}
         defaultValue={defaultValue}
       >
-        <Trigger>
+        <Trigger id={triggerId}>
           <SelectComponent.Value placeholder='Selecione' />
         </Trigger>
         <Portal>

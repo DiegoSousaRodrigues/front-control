@@ -1,0 +1,37 @@
+import { w } from 'windstitch'
+
+export const Wrapper = w.section('flex flex-col gap-6 px-4 py-6 sm:px-8 lg:px-12')
+export const Header = w.header('flex flex-col gap-2')
+export const Title = w.h1('text-lg font-semibold')
+export const Description = w.p('text-sm text-gray-600')
+export const Filter = w.div('w-full max-w-md')
+export const State = w.div(
+  'flex min-h-16 items-center justify-between gap-3 rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-gray-600'
+)
+export const RetryButton = w.button(
+  'rounded-md font-medium text-primary underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary'
+)
+export const ReportHeader = w.div('flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between')
+export const ClientName = w.h2('text-base font-semibold')
+export const ClientStatus = w.span('w-fit rounded-full bg-gray-100 px-2 py-1 text-xs text-gray-600')
+export const Alert = w.div('rounded-lg border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-950')
+export const SummaryGrid = w.div('grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4')
+export const SummaryCard = w.dl('flex min-h-24 flex-col justify-between gap-2 rounded-xl border border-gray-200 p-4')
+export const SummaryLabel = w.dt('text-xs font-medium text-gray-500')
+export const SummaryValue = w.dd('text-xl font-semibold tabular-nums')
+export const ProfitMeta = w.span('text-xs font-semibold')
+export const TableRegion = w.div('hidden overflow-x-auto rounded-xl border border-gray-200 md:block')
+export const Table = w.table('w-full min-w-[720px] border-collapse text-left text-sm')
+export const TableHead = w.thead('bg-gray-50 text-xs text-gray-500')
+export const TableHeader = w.th('px-4 py-3 font-medium')
+export const TableBody = w.tbody('divide-y divide-gray-100')
+export const TableCell = w.td('px-4 py-3 tabular-nums')
+export const TableRowHeader = w.th('px-4 py-3 text-left font-medium')
+export const MobileList = w.div('flex flex-col gap-3 md:hidden')
+export const MonthCard = w.article('flex flex-col gap-3 rounded-xl border border-gray-200 p-4')
+export const MonthCardHeader = w.div('flex items-center justify-between gap-3')
+export const MonthTitle = w.h3('font-semibold')
+export const MonthStats = w.dl('grid grid-cols-2 gap-x-4 gap-y-3')
+export const MonthStat = w.div('flex min-w-0 flex-col gap-1')
+export const MonthTerm = w.dt('text-xs text-gray-500')
+export const MonthValue = w.dd('break-words text-sm font-medium tabular-nums')

@@ -9,7 +9,7 @@ export const Root = styled(Select.Root, {})
 
 export const Trigger = styled(Select.Trigger, {
   className:
-    'truncate w-full h-[38px] rounded-lg border border-solid px-4 text-start border-gray-200 hover:border-primary focus:border focus:border-primary overflow-hidden',
+    'truncate w-full h-[38px] rounded-lg border border-solid px-4 text-start border-gray-200 hover:border-primary focus:border focus:border-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary overflow-hidden disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-500',
 })
 
 export const Portal = styled(Select.Portal, {})
