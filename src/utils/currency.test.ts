@@ -1,5 +1,12 @@
 import { describe, expect, it } from 'vitest'
-import { BRLStringToNumber, multiplyCurrency, nullableNumberToBRLString, numberToBRLString } from './currency'
+import {
+  addCurrency,
+  BRLStringToNumber,
+  multiplyCurrency,
+  nullableNumberToBRLString,
+  numberToBRLString,
+  subtractCurrency,
+} from './currency'
 
 describe('currency utilities', () => {
   it('parses localized BRL without returning a localized payload', () => {
@@ -17,6 +24,11 @@ describe('currency utilities', () => {
 
   it('uses monetary multiplication for an order line total', () => {
     expect(multiplyCurrency(10.1, 3)).toBe(30.3)
+  })
+
+  it('calculates residual and amount due with monetary operations', () => {
+    expect(subtractCurrency(100.1, 20.05)).toBe(80.05)
+    expect(addCurrency(80.05, 19.95)).toBe(100)
   })
 
   it('rejects invalid multiplication inputs', () => {

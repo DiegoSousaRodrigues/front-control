@@ -1,8 +1,9 @@
-import { findAll } from '@/services/order'
+import { findOpenBalance } from '@/services/order'
 import { handleBackendError, rejectWithoutToken } from '@/utils/apiRoute'
+import { isFutureOrderPeriod, parseOrderPeriod } from '@/utils/orderMonth'
+import { parsePositiveId } from '@/utils/positiveId'
 import { getRequestToken } from '@/utils/serverAuth'
 import { NextApiRequest, NextApiResponse } from 'next'
-import { isFutureOrderPeriod, parseOrderPeriod } from '@/utils/orderMonth'
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'GET') {
@@ -13,13 +14,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const token = getRequestToken(req)
   if (rejectWithoutToken(res, token)) return
 
+  const clientId = parsePositiveId(req.query.clientId)
   const period = parseOrderPeriod(req.query.year, req.query.month)
-  if (!period || isFutureOrderPeriod(period)) {
-    return res.status(400).json({ error: 'Invalid order period' })
+  if (!clientId || !period || isFutureOrderPeriod(period)) {
+    return res.status(400).json({ error: 'Invalid open balance parameters' })
   }
 
   try {
-    const response = await findAll(period.year, period.month, token)
+    const response = await findOpenBalance(clientId, period.year, period.month, token)
     return res.status(response.status).json(response.data)
   } catch (error) {
     return handleBackendError(error, res)

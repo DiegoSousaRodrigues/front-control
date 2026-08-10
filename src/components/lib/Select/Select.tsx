@@ -2,6 +2,7 @@ import * as SelectComponent from '@radix-ui/react-select'
 import { SelectProps } from './Select.types'
 import { Content, Group, Item, Label, Portal, Root, Trigger, Viewport, Wrapper } from './Select.styles'
 import { forwardRef } from 'react'
+import { resolveSelectValue } from './Select.utils'
 
 export function Select({ label, items, onChange, value, disabled = false, defaultValue }: SelectProps) {
   function handleOnChange(value: string | number) {
@@ -14,11 +15,11 @@ export function Select({ label, items, onChange, value, disabled = false, defaul
       <Root
         disabled={disabled}
         onValueChange={(value: string) => handleOnChange(value)}
-        value={(items.length === 1 ? items[0].value : value).toString()}
+        value={resolveSelectValue(items, value)}
         defaultValue={defaultValue}
       >
         <Trigger>
-          <SelectComponent.Value />
+          <SelectComponent.Value placeholder='Selecione' />
         </Trigger>
         <Portal>
           <Content>

@@ -1,4 +1,4 @@
-import { dinero, multiply, toDecimal } from 'dinero.js'
+import { add, dinero, multiply, subtract, toDecimal } from 'dinero.js'
 import { BRL } from 'dinero.js/currencies'
 
 export function BRLStringToNumber(brlString: string | null | undefined): number {
@@ -37,4 +37,18 @@ export function multiplyCurrency(numberValue: number, multiplier: number): numbe
 
   const value = dinero({ amount: Math.round(numberValue * 100), currency: BRL })
   return toDecimal(multiply(value, multiplier), ({ value: decimalValue }) => Number(decimalValue))
+}
+
+function toDinero(numberValue: number) {
+  return dinero({ amount: Math.round(numberValue * 100), currency: BRL })
+}
+
+export function addCurrency(first: number, second: number): number {
+  if (!Number.isFinite(first) || !Number.isFinite(second)) return NaN
+  return toDecimal(add(toDinero(first), toDinero(second)), ({ value }) => Number(value))
+}
+
+export function subtractCurrency(first: number, second: number): number {
+  if (!Number.isFinite(first) || !Number.isFinite(second)) return NaN
+  return toDecimal(subtract(toDinero(first), toDinero(second)), ({ value }) => Number(value))
 }
