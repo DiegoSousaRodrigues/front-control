@@ -1,11 +1,12 @@
 import { IconType } from 'react-icons'
-import { MdListAlt, MdOutlinePersonOutline, MdOutlineShoppingCart } from 'react-icons/md'
+import { MdAssessment, MdListAlt, MdOutlinePersonOutline, MdOutlineShoppingCart } from 'react-icons/md'
 import { MainLayoutMenu } from './MainLayout.types'
 
 export const icons = new Map<string, IconType>([
   ['person', MdOutlinePersonOutline],
   ['order', MdListAlt],
   ['products', MdOutlineShoppingCart],
+  ['report', MdAssessment],
 ])
 
 export const menu = [
@@ -55,6 +56,21 @@ export const menu = [
       {
         name: 'Listar',
         url: 'list',
+      },
+    ],
+  },
+  {
+    icon: 'report',
+    name: 'Relatório',
+    defaultLink: 'report',
+    subMenu: [
+      {
+        name: 'Balanço por cliente',
+        url: 'client-balance',
+      },
+      {
+        name: 'Balanço mensal',
+        url: 'monthly-balance',
       },
     ],
   },

@@ -44,7 +44,8 @@ export const AccordionContent = styled(Accordion.Content, {
 })
 
 export const LinkStyled = styled(NextLink, {
-  className: 'flex px-4 py-2 w-full jus justify-between items-center rounded-md hover:bg-gray-100',
+  className:
+    'flex px-4 py-2 w-full justify-between items-center rounded-md hover:bg-gray-100 data-[active=true]:bg-gray-100 data-[active=true]:font-semibold data-[active=true]:text-primary',
 })
 
 export const SessionActions = w.div('border-t border-gray-100 px-2 py-4')
