@@ -1,9 +1,21 @@
 export type ProductDetails = {
   id: number
   name: string
-  price: string
+  purchasePrice: number | null
+  salePrice: number
   active: boolean
-  file?: File | string
   imageUrl?: string
-  showOnWebsite?: boolean
+}
+
+export type ProductRequest = {
+  name: string
+  purchasePrice: number
+  salePrice: number
+}
+
+export type ProductFormData = {
+  name: string
+  purchasePrice: string
+  salePrice: string
+  file?: File | string
 }

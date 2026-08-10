@@ -10,6 +10,6 @@ export type OrderSkuLineProps = {
   products: {
     value: number
     label: string
-    price: string
+    salePrice: number
   }[]
 }

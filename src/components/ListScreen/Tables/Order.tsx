@@ -1,5 +1,6 @@
 import { TableBody, TableColumnHeaderCell, TableHeader, TableRow, TableRowHeaderCell } from '../ListScreen.styles'
 import { OrderDetails } from '@/types/order'
+import { numberToBRLString } from '@/utils/currency'
 
 type TableOrderProps = {
   data: OrderDetails[]
@@ -20,7 +21,7 @@ export function TableOrder({ data }: TableOrderProps) {
           <TableRow key={id}>
             <TableRowHeaderCell>{name}</TableRowHeaderCell>
             <TableRowHeaderCell>{fullAddress}</TableRowHeaderCell>
-            <TableRowHeaderCell>{priceTotal}</TableRowHeaderCell>
+            <TableRowHeaderCell>{numberToBRLString(priceTotal)}</TableRowHeaderCell>
           </TableRow>
         ))}
       </TableBody>

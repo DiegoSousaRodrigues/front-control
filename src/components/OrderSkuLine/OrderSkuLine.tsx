@@ -5,7 +5,7 @@ import Select from '../lib/Select'
 import { Input } from '../lib/Input/Input'
 import { MdDelete } from 'react-icons/md'
 import { useState, ChangeEvent } from 'react'
-import { BRLStringToNumber, numberToBRLString } from '@/utils/currency'
+import { multiplyCurrency, numberToBRLString } from '@/utils/currency'
 import Message from '../lib/Message'
 
 export function OrderSkuLine({ index, control, products, removeProduct, getValues }: OrderSkuLineProps) {
@@ -21,11 +21,10 @@ export function OrderSkuLine({ index, control, products, removeProduct, getValue
   }
 
   function updatePrice(productId: string | number) {
-    const defaultPriceString = products.find(({ value }) => String(value) === productId)?.price
-    const priceNumber = BRLStringToNumber(defaultPriceString)
+    const salePrice = products.find(({ value }) => String(value) === productId)?.salePrice
     const quantity = getValues(`products.${index}.quantity`)
 
-    setPrice(numberToBRLString(priceNumber * quantity))
+    setPrice(numberToBRLString(multiplyCurrency(salePrice ?? NaN, Number(quantity))))
   }
 
   return (

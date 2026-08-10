@@ -4,34 +4,49 @@ import { Controller, useForm } from 'react-hook-form'
 import { useQueryClient } from '@tanstack/react-query'
 import { Input } from '../lib/Input/Input'
 import Message from '../lib/Message'
-import { Button, Form, Title, Wrapper, WrapperInputs } from './FormProduct.styles'
-import { ProductData } from './FormProduct.types'
+import { Button, FlexInputs, Form, Title, Wrapper, WrapperInputs } from './FormProduct.styles'
+import { ProductFormData } from './FormProduct.types'
 import { required } from '@/utils/validate'
 import { showToastEvent } from '@/events/events'
-import { ProductDetails } from '@/types/products'
+import { ProductDetails, ProductRequest } from '@/types/products'
 import { add, update } from '@/api-client/product'
 import UploadFile from '../lib/UploadFile'
+import { BRLStringToNumber } from '@/utils/currency'
+import { createProductFormData, productDetailsToFormData } from '@/utils/productFormData'
+
+function requiredCurrency(label: string, minimum: number) {
+  return {
+    required: `${label} é obrigatório`,
+    validate: (value: string) => {
+      const parsedValue = BRLStringToNumber(value)
+      return (
+        (Number.isFinite(parsedValue) && parsedValue >= minimum) ||
+        `${label} deve ser ${minimum === 0 ? 'zero ou maior' : 'maior que zero'}`
+      )
+    },
+  }
+}
 
 export function FormProduct({ props, type }: { props?: ProductDetails; type: 'edit' | 'add' }) {
-  const { formState, register, reset, handleSubmit, control } = useForm<ProductData>({
-    defaultValues: props,
+  const { formState, register, reset, handleSubmit, control } = useForm<ProductFormData>({
+    defaultValues: props
+      ? productDetailsToFormData(props)
+      : { name: '', purchasePrice: '', salePrice: '' },
   })
-  const [disabled, setDisabled] = useState<boolean>(false)
+  const [disabled, setDisabled] = useState(false)
   const queryClient = useQueryClient()
   const isEdit = type === 'edit'
 
-  async function onSubmit(params: ProductData) {
+  async function onSubmit(params: ProductFormData) {
     try {
       setDisabled(true)
 
-      const formData = new FormData()
-      formData.append('name', params.name)
-      formData.append('price', String(params.price))
-      formData.append('showOnWebsite', String(Boolean(params.showOnWebsite)))
-
-      if (params.file instanceof File) {
-        formData.append('file', params.file)
+      const product: ProductRequest = {
+        name: params.name,
+        purchasePrice: BRLStringToNumber(params.purchasePrice),
+        salePrice: BRLStringToNumber(params.salePrice),
       }
+      const formData = createProductFormData(product, params.file)
 
       let response
       let text
@@ -50,30 +65,22 @@ export function FormProduct({ props, type }: { props?: ProductDetails; type: 'ed
       }
 
       if (response?.status === 200) {
-        showToastEvent({
-          status: 'success',
-          description: `Produto ${text} com sucesso`,
-        })
+        showToastEvent({ status: 'success', description: `Produto ${text} com sucesso` })
         await queryClient.invalidateQueries({ queryKey: ['product/list'] })
 
         if (type === 'add') {
-          reset()
+          reset({ name: '', purchasePrice: '', salePrice: '' })
         }
       }
     } catch {
-      showToastEvent({
-        status: 'error',
-        description: 'Erro ao salvar produto. Tente novamente.',
-      })
+      showToastEvent({ status: 'error', description: 'Erro ao salvar produto. Tente novamente.' })
     } finally {
       setDisabled(false)
     }
   }
 
   function handleOnChangeFile(onChange: (...event: any[]) => void) {
-    return (file?: File) => {
-      onChange(file)
-    }
+    return (file?: File) => onChange(file)
   }
 
   return (
@@ -81,24 +88,32 @@ export function FormProduct({ props, type }: { props?: ProductDetails; type: 'ed
       <Title>{isEdit ? 'Editar produto' : 'Adicionar produto'}</Title>
 
       <Form onSubmit={handleSubmit(onSubmit)}>
-        <div className='flex gap-4'>
+        <FlexInputs>
           <WrapperInputs>
             <Input label='Nome:' mask='letter-only' {...register('name', required('Nome'))} />
             {formState.errors.name && <Message>{formState.errors.name.message}</Message>}
           </WrapperInputs>
 
           <WrapperInputs>
-            <Input label='Preço:' mask='currency' {...register('price', required('Preço'))} />
-            {formState.errors.price && <Message>{formState.errors.price.message}</Message>}
+            <Input
+              label='Valor de compra:'
+              mask='currency'
+              inputMode='decimal'
+              {...register('purchasePrice', requiredCurrency('Valor de compra', 0))}
+            />
+            {formState.errors.purchasePrice && <Message>{formState.errors.purchasePrice.message}</Message>}
           </WrapperInputs>
 
           <WrapperInputs>
-            <label className='flex items-center gap-2 text-xs text-primary px-2'>
-              <input type='checkbox' {...register('showOnWebsite')} />
-              Exibir no site
-            </label>
+            <Input
+              label='Valor de venda:'
+              mask='currency'
+              inputMode='decimal'
+              {...register('salePrice', requiredCurrency('Valor de venda', 0.01))}
+            />
+            {formState.errors.salePrice && <Message>{formState.errors.salePrice.message}</Message>}
           </WrapperInputs>
-        </div>
+        </FlexInputs>
 
         <WrapperInputs>
           <Controller

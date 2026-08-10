@@ -10,6 +10,7 @@ import {
 } from '../ListScreen.styles'
 import Link from 'next/link'
 import { MdBlock, MdLockOpen, MdOutlineModeEditOutline } from 'react-icons/md'
+import { nullableNumberToBRLString, numberToBRLString } from '@/utils/currency'
 
 export function TableProduct({
   data,
@@ -25,14 +26,17 @@ export function TableProduct({
       <TableHeader>
         <TableRow>
           <TableColumnHeaderCell>Nome</TableColumnHeaderCell>
-          <TableColumnHeaderCell>Preço</TableColumnHeaderCell>
+          <TableColumnHeaderCell>Compra</TableColumnHeaderCell>
+          <TableColumnHeaderCell>Venda</TableColumnHeaderCell>
+          <TableColumnHeaderCell>Ações</TableColumnHeaderCell>
         </TableRow>
       </TableHeader>
       <TableBody>
-        {(data as ProductDetails[])?.map(({ name, price, id, active }) => (
+        {(data as ProductDetails[])?.map(({ name, purchasePrice, salePrice, id, active }) => (
           <TableRow key={id}>
             <TableRowHeaderCell>{name}</TableRowHeaderCell>
-            <TableRowHeaderCell>{price}</TableRowHeaderCell>
+            <TableRowHeaderCell>{nullableNumberToBRLString(purchasePrice)}</TableRowHeaderCell>
+            <TableRowHeaderCell>{numberToBRLString(salePrice)}</TableRowHeaderCell>
             <TableCell>
               <div className='flex gap-2'>
                 <Link href={`/product/edit/${id}`}>

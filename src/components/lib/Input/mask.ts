@@ -33,12 +33,14 @@ const cpfMask = (value: string) =>
     .replace(/\.(\d{3})(\d)/, '.$1-$2')
     .slice(0, 14)
 
-const currencyMask = (value: string) =>
-  'R$ ' +
-  value
-    .replace(/\D/g, '')
-    .replace(/(\d)(\d{2})$/, '$1,$2')
-    .replace(/(?=(\d{3})+(\D))\B/g, '.')
+const currencyMask = (value: string) => {
+  const digits = value.replace(/\D/g, '').replace(/^0+(?=\d)/, '') || '0'
+  const paddedDigits = digits.padStart(3, '0')
+  const integerPart = paddedDigits.slice(0, -2).replace(/\B(?=(\d{3})+(?!\d))/g, '.')
+  const cents = paddedDigits.slice(-2)
+
+  return `R$ ${integerPart},${cents}`
+}
 
 const maskMap = new Map<Mask, (value: string) => string>([
   ['cep', cepMask],

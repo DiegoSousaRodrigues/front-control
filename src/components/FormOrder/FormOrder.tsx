@@ -48,7 +48,7 @@ export function FormOrder({ isSequence = false }: FormOrderProps) {
 
   const listClients = dataClient?.map((c) => ({ value: c.id, label: `${c.name} - ${c.street}, ${c.number}` }))
 
-  const listProduct = dataProduct?.map((p) => ({ value: p.id, label: p.name, price: p.price }))
+  const listProduct = dataProduct?.map((p) => ({ value: p.id, label: p.name, salePrice: p.salePrice }))
 
   useEffect(() => {
     if (!listClients?.length) {

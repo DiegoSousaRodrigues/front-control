@@ -1,19 +1,25 @@
 import { ClientDetails } from './client'
-import { ProductDetails } from './products'
+export type OrderSkuDetails = {
+  id: number
+  name: string
+  salePrice: number
+  active: boolean
+  imageUrl?: string
+}
 
 export type OrderItemDetails = {
   id: number
   skuId: number
   name: string
   quantity: number
-  unitPrice: string
-  lineTotal: string
-  sku: ProductDetails
+  unitPrice: number
+  lineTotal: number
+  sku: OrderSkuDetails
 }
 
 export type OrderDetails = {
   id: number
   client: ClientDetails
   orderSkus: OrderItemDetails[]
-  priceTotal: string
+  priceTotal: number
 }

@@ -1,3 +1,1 @@
-import { ProductDetails } from '@/types/products'
-
-export type ProductData = ProductDetails
+export type { ProductFormData } from '@/types/products'
