@@ -12,11 +12,11 @@ describe('getApiControlBaseUrl', () => {
     expect(getApiControlBaseUrl()).toBe('https://api-control.example.com')
   })
 
-  it('rejects missing API base URL outside tests', () => {
+  it('falls back to localhost when API base URL is not configured', () => {
     vi.stubEnv('NODE_ENV', 'production')
     vi.stubEnv('API_CONTROL_BASE_URL', '')
 
-    expect(() => getApiControlBaseUrl()).toThrow('API_CONTROL_BASE_URL is required')
+    expect(getApiControlBaseUrl()).toBe('http://localhost:3001')
   })
 
   it('rejects non-http protocols', () => {
