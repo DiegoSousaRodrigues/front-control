@@ -7,6 +7,7 @@ import {
   getProfitStatusLabel,
   resolveClientBalanceViewState,
   shouldFetchClientBalance,
+  toClientBalancePresentation,
 } from './clientBalance'
 
 describe('client balance presentation', () => {
@@ -52,5 +53,71 @@ describe('client balance presentation', () => {
   it('uses singular and plural in the incomplete-cost warning', () => {
     expect(getMissingCostMessage(1)).toContain('1 item não possui')
     expect(getMissingCostMessage(3)).toContain('3 itens não possuem')
+  })
+
+  it('maps the v2 invoice contract without inventing incomplete costs', () => {
+    const presentation = toClientBalancePresentation(
+      {
+        client: { id: 7, name: 'Cliente', active: true },
+        totals: {
+          invoiceCount: 2,
+          quantityTotal: 5,
+          purchaseTotal: 10,
+          saleTotal: 20,
+          profitTotal: 10,
+        },
+        months: [
+          {
+            year: 2026,
+            month: 8,
+            invoiceCount: 2,
+            quantityTotal: 5,
+            purchaseTotal: 10,
+            saleTotal: 20,
+            profitTotal: 10,
+          },
+        ],
+      },
+      true
+    )
+
+    expect(presentation.recordLabel).toBe('Faturas')
+    expect(presentation.totals).toMatchObject({ recordCount: 2, costComplete: true, missingCostItemCount: 0 })
+    expect(presentation.months[0]).toMatchObject({ recordCount: 2, year: 2026, month: 8, costComplete: true })
+  })
+
+  it('preserves nullable historical costs in the legacy order contract', () => {
+    const presentation = toClientBalancePresentation(
+      {
+        client: { id: 7, name: 'Cliente', active: true },
+        totals: {
+          orderCount: 1,
+          quantityTotal: 2,
+          purchaseTotal: null,
+          saleTotal: 20,
+          profitTotal: null,
+          costComplete: false,
+          missingCostItemCount: 1,
+        },
+        months: [
+          {
+            year: null,
+            month: null,
+            orderCount: 1,
+            quantityTotal: 2,
+            purchaseTotal: null,
+            saleTotal: 20,
+            profitTotal: null,
+            costComplete: false,
+            missingCostItemCount: 1,
+          },
+        ],
+      },
+      false
+    )
+
+    expect(presentation.recordLabel).toBe('Pedidos')
+    expect(presentation.totals).toMatchObject({ purchaseTotal: null, costComplete: false, missingCostItemCount: 1 })
+    expect(presentation.months[0]).toMatchObject({ recordCount: 1, year: null, month: null, costComplete: false })
   })
 })

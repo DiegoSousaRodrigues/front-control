@@ -1,7 +1,9 @@
 import { ClientDetails } from '@/types/client'
-import { ClientBalance, ClientBalanceMonth } from '@/types/report'
+import { ClientBalanceContract } from '@/types/report'
+import { isBillingV2Enabled } from '@/utils/billingV2'
 import {
   buildClientBalanceQuery,
+  ClientBalancePresentationMonth,
   formatClientBalanceMonth,
   getMissingCostMessage,
   getProfitStatus,
@@ -9,6 +11,7 @@ import {
   ProfitStatus,
   resolveClientBalanceViewState,
   shouldFetchClientBalance,
+  toClientBalancePresentation,
 } from '@/utils/clientBalance'
 import { nullableNumberToBRLString, numberToBRLString } from '@/utils/currency'
 import { parsePositiveId } from '@/utils/positiveId'
@@ -68,11 +71,11 @@ function ProfitValue({ value }: { value: number | null }) {
   )
 }
 
-function MonthCells({ month }: { month: ClientBalanceMonth }) {
+function MonthCells({ month }: { month: ClientBalancePresentationMonth }) {
   return (
     <>
       <TableRowHeader scope='row'>{formatClientBalanceMonth(month.year, month.month)}</TableRowHeader>
-      <TableCell>{month.orderCount}</TableCell>
+      <TableCell>{month.recordCount}</TableCell>
       <TableCell>{month.quantityTotal}</TableCell>
       <TableCell>{nullableNumberToBRLString(month.purchaseTotal)}</TableCell>
       <TableCell>{numberToBRLString(month.saleTotal)}</TableCell>
@@ -87,6 +90,7 @@ function MonthCells({ month }: { month: ClientBalanceMonth }) {
 
 export function ClientBalanceScreen() {
   const router = useRouter()
+  const billingV2Enabled = isBillingV2Enabled()
   const rawClientId = router.query.clientId
   const selectedClientId = router.isReady ? parsePositiveId(rawClientId) : null
 
@@ -97,7 +101,7 @@ export function ClientBalanceScreen() {
   })
   const reportQuery = useQuery({
     queryKey: ['report/client-balance', { clientId: selectedClientId }],
-    queryFn: queryFetch<ClientBalance>,
+    queryFn: queryFetch<ClientBalanceContract>,
     enabled: shouldFetchClientBalance(router.isReady, selectedClientId),
     staleTime: 0,
     gcTime: 0,
@@ -135,13 +139,19 @@ export function ClientBalanceScreen() {
     isError: reportQuery.isError,
     monthCount: reportQuery.data?.months.length,
   })
-  const report = reportQuery.data
+  const report = reportQuery.data ? toClientBalancePresentation(reportQuery.data, billingV2Enabled) : undefined
 
   return (
     <Wrapper aria-labelledby='client-balance-title'>
       <Header>
-        <Title id='client-balance-title'>Balanço por cliente</Title>
-        <Description>Consulte os totais autoritativos e a evolução mensal de um cliente.</Description>
+        <Title id='client-balance-title'>
+          {billingV2Enabled ? 'Resultado comercial por cliente' : 'Balanço por cliente'}
+        </Title>
+        <Description>
+          {billingV2Enabled
+            ? 'Consulte os snapshots comerciais das faturas emitidas. Pagamentos e crédito não participam deste relatório.'
+            : 'Consulte os totais autoritativos e a evolução mensal de um cliente.'}
+        </Description>
       </Header>
 
       <Filter>
@@ -183,9 +193,13 @@ export function ClientBalanceScreen() {
             <ClientStatus>{report.client.active ? 'Cliente ativo' : 'Cliente inativo'}</ClientStatus>
           </ReportHeader>
 
-          {reportQuery.isFetching && <span role='status' className='text-xs text-gray-500'>Atualizando dados...</span>}
+          {reportQuery.isFetching && (
+            <span role='status' className='text-xs text-gray-500'>
+              Atualizando dados...
+            </span>
+          )}
 
-          {!report.totals.costComplete && (
+          {!report.isV2 && !report.totals.costComplete && (
             <Alert role='status'>
               <strong>Custos incompletos.</strong> {getMissingCostMessage(report.totals.missingCostItemCount)} Compra e
               lucro indisponíveis são exibidos como —.
@@ -214,7 +228,11 @@ export function ClientBalanceScreen() {
           </SummaryGrid>
 
           {viewState === 'empty' ? (
-            <State>Nenhum pedido encontrado para este cliente.</State>
+            <State>
+              {report.isV2
+                ? 'Nenhuma fatura encontrada para este cliente.'
+                : 'Nenhum pedido encontrado para este cliente.'}
+            </State>
           ) : (
             <>
               <TableRegion role='region' aria-label='Balanço mensal do cliente' tabIndex={0}>
@@ -222,7 +240,7 @@ export function ClientBalanceScreen() {
                   <caption className='sr-only'>Balanço mensal de {report.client.name}</caption>
                   <TableHead>
                     <tr>
-                      {['Mês', 'Pedidos', 'Quantidade', 'Compra', 'Venda', 'Lucro'].map((label) => (
+                      {['Mês', report.recordLabel, 'Quantidade', 'Compra', 'Venda', 'Lucro'].map((label) => (
                         <TableHeader scope='col' key={label}>
                           {label}
                         </TableHeader>
@@ -248,8 +266,8 @@ export function ClientBalanceScreen() {
                     </MonthCardHeader>
                     <MonthStats>
                       <MonthStat>
-                        <MonthTerm>Pedidos</MonthTerm>
-                        <MonthValue>{month.orderCount}</MonthValue>
+                        <MonthTerm>{report.recordLabel}</MonthTerm>
+                        <MonthValue>{month.recordCount}</MonthValue>
                       </MonthStat>
                       <MonthStat>
                         <MonthTerm>Quantidade</MonthTerm>

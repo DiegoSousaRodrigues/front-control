@@ -5,7 +5,7 @@ vi.mock('@/utils/auth', () => ({ getAuthHeader: vi.fn(() => ({ Authorization: 'B
 
 import { apiControl } from '@/utils/api'
 import { getAuthHeader } from '@/utils/auth'
-import { findClientBalance } from './report'
+import { findClientBalance, findClientBalanceV2 } from './report'
 
 describe('report service', () => {
   beforeEach(() => vi.clearAllMocks())
@@ -17,6 +17,15 @@ describe('report service', () => {
     expect(apiControl.get).toHaveBeenCalledWith('report/client-balance', {
       headers: { Authorization: 'Bearer test-token' },
       params: { clientId: 7 },
+    })
+  })
+
+  it('uses the coordinated endpoint for the v2 invoice report contract', async () => {
+    vi.mocked(apiControl.get).mockResolvedValue({ status: 200, data: { months: [] } })
+    await findClientBalanceV2(9, 'test-token')
+    expect(apiControl.get).toHaveBeenCalledWith('report/client-balance', {
+      headers: { Authorization: 'Bearer test-token' },
+      params: { clientId: 9 },
     })
   })
 })
