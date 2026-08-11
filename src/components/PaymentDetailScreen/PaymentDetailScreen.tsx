@@ -129,6 +129,8 @@ export function PaymentDetailScreen() {
         open={confirming}
         title='Estornar este pagamento?'
         confirmLabel='Confirmar estorno'
+        requireReason
+        reasonLabel='Motivo do estorno'
         pending={reversal.isPending}
         onCancel={() => setConfirming(false)}
         onConfirm={(reason) => reason && reversal.mutate(reason)}

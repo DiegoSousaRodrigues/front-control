@@ -15,8 +15,10 @@ export function isMenuLinkActive(pathname: string, href: string): boolean {
 }
 
 export function getActiveMenuName(items: MainLayoutMenu[], pathname: string): string | null {
-  const activeItem = items.find(({ defaultLink, subMenu }) =>
+  const exactItem = items.find(({ defaultLink, subMenu }) =>
     subMenu.some(({ url }) => isMenuLinkActive(pathname, getMenuHref(defaultLink, url)))
   )
-  return activeItem?.name ?? null
+  if (exactItem) return exactItem.name
+  const normalized = normalizePathname(pathname)
+  return items.find(({ defaultLink }) => normalized.startsWith(`/${defaultLink}/`))?.name ?? null
 }

@@ -133,6 +133,16 @@ Exemplo local sem valores sensíveis:
 API_CONTROL_BASE_URL=http://localhost:3001
 ```
 
+As telas staging de Faturas e Pagamentos ficam fora da navegação normal enquanto o backend v2 não estiver ativo. No
+build coordenado de corte, habilite explicitamente:
+
+```env
+NEXT_PUBLIC_BILLING_V2_ENABLED=true
+```
+
+Com a variável ausente ou diferente de `true`, o menu e as rotas antigas de Pedido continuam ativos. Como a variável
+é pública e incorporada ao bundle pelo Next.js, sua alteração exige um novo build do front; ela não contém segredo.
+
 ## Componentes Principais
 
 - **`MainLayout`**: Define a estrutura visual principal da aplicação, incluindo a barra lateral de navegação com um acordeão.

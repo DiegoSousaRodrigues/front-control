@@ -1,8 +1,11 @@
 import FormOrder from '@/components/FormOrder'
-import withLogin from '@/utils/withLogin'
+import { withBillingV2Redirect } from '@/utils/billingV2Redirect'
+import { GetServerSidePropsContext } from 'next'
 
 export default function Add() {
   return <FormOrder />
 }
 
-export const getServerSideProps = withLogin
+export function getServerSideProps(context: GetServerSidePropsContext) {
+  return withBillingV2Redirect(context, '/invoice/add')
+}

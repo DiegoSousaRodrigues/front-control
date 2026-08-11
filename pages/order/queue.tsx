@@ -1,8 +1,11 @@
 import QueueScreen from '@/components/QueueScreen'
-import withLogin from '@/utils/withLogin'
+import { withBillingV2Redirect } from '@/utils/billingV2Redirect'
+import { GetServerSidePropsContext } from 'next'
 
 export default function Queue() {
   return <QueueScreen />
 }
 
-export const getServerSideProps = withLogin
+export function getServerSideProps(context: GetServerSidePropsContext) {
+  return withBillingV2Redirect(context, '/invoice/queue')
+}

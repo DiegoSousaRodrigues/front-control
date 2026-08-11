@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { menu } from './menu'
+import { getMainMenu, menu } from './menu'
 import { getActiveMenuName, getMenuHref, isMenuLinkActive } from './menu.utils'
 
 describe('main menu navigation', () => {
@@ -20,5 +20,17 @@ describe('main menu navigation', () => {
   it('opens the accordion that owns the active route', () => {
     expect(getActiveMenuName(menu, '/report/client-balance')).toBe('Relatório')
     expect(getActiveMenuName(menu, '/home')).toBeNull()
+    expect(getActiveMenuName(getMainMenu(true), '/invoice/[id]')).toBe('Faturas')
+  })
+
+  it('keeps legacy navigation by default and exposes billing only at cutover', () => {
+    expect(getMainMenu(false).some(({ name }) => name === 'Pedidos')).toBe(true)
+    const billing = getMainMenu(true)
+    expect(billing.find(({ name }) => name === 'Faturas')?.subMenu).toEqual([
+      { name: 'Emitir', url: 'add' },
+      { name: 'Listar', url: 'list' },
+      { name: 'Sequência', url: 'queue' },
+    ])
+    expect(billing.find(({ name }) => name === 'Pagamentos')?.subMenu).toHaveLength(2)
   })
 })

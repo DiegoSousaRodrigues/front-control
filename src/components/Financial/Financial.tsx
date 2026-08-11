@@ -62,6 +62,8 @@ export function ConfirmDialog({
   children,
   confirmLabel,
   pending,
+  requireReason = false,
+  reasonLabel = 'Motivo',
   onCancel,
   onConfirm,
 }: {
@@ -70,6 +72,8 @@ export function ConfirmDialog({
   children: ReactNode
   confirmLabel: string
   pending?: boolean
+  requireReason?: boolean
+  reasonLabel?: string
   onCancel: () => void
   onConfirm: (reason?: string) => void
 }) {
@@ -103,9 +107,9 @@ export function ConfirmDialog({
           {title}
         </h2>
         <div className='text-sm text-gray-700'>{children}</div>
-        {confirmLabel === 'Confirmar estorno' && (
+        {requireReason && (
           <label className='flex flex-col gap-1 text-sm'>
-            Motivo do estorno
+            {reasonLabel}
             <textarea
               autoFocus
               required
